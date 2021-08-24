@@ -23,7 +23,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.delayed(Duration(seconds: 3), () => 100),
+        future: Future.delayed(Duration(milliseconds: 300), () => 100),
         builder: (context, snapshot) {
           return AnimatedSwitcher(
               duration: Duration(milliseconds: 300),
@@ -49,6 +49,13 @@ class TomatoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp.router(
+      theme: ThemeData(
+          primarySwatch: Colors.red,
+          fontFamily: 'DoHyeon',
+          hintColor: Colors.grey[350],
+          textTheme: TextTheme(
+            button: TextStyle(color: Colors.white),
+          )),
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
     );

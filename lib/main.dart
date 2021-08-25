@@ -1,7 +1,7 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/router/locations.dart';
-import 'package:tomato_record/screens/auth_screen.dart';
+import 'package:tomato_record/screens/start_screen.dart';
 import 'package:tomato_record/screens/splash_screen.dart';
 import 'package:tomato_record/utils/logger.dart';
 
@@ -11,7 +11,7 @@ final _routerDelegate = BeamerDelegate(guards: [
       check: (context, location) {
         return false;
       },
-      showPage: BeamPage(child: AuthScreen()))
+      showPage: BeamPage(child: StartScreen()))
 ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
 
 void main() {
@@ -55,7 +55,11 @@ class TomatoApp extends StatelessWidget {
           hintColor: Colors.grey[350],
           textTheme: TextTheme(
             button: TextStyle(color: Colors.white),
-          )),
+          ),
+          appBarTheme: AppBarTheme(
+              backgroundColor: Colors.white,
+              elevation: 2,
+              titleTextStyle: TextStyle(color: Colors.black87))),
       routeInformationParser: BeamerParser(),
       routerDelegate: _routerDelegate,
     );

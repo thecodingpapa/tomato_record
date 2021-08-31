@@ -1,8 +1,10 @@
 import 'package:beamer/beamer.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/start_screen.dart';
 import 'package:tomato_record/screens/splash_screen.dart';
+import 'package:tomato_record/states/user_provider.dart';
 import 'package:tomato_record/utils/logger.dart';
 
 final _routerDelegate = BeamerDelegate(guards: [
@@ -48,25 +50,30 @@ class TomatoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp.router(
-      theme: ThemeData(
-          primarySwatch: Colors.red,
-          fontFamily: 'DoHyeon',
-          hintColor: Colors.grey[350],
-          textTheme: TextTheme(
-            button: TextStyle(color: Colors.white),
-          ),
-          textButtonTheme: TextButtonThemeData(
-              style: TextButton.styleFrom(
-                  backgroundColor: Colors.red,
-                  primary: Colors.white,
-                  minimumSize: Size(48, 48))),
-          appBarTheme: AppBarTheme(
-              backgroundColor: Colors.white,
-              elevation: 2,
-              titleTextStyle: TextStyle(color: Colors.black87))),
-      routeInformationParser: BeamerParser(),
-      routerDelegate: _routerDelegate,
+    return ChangeNotifierProvider<UserProvider>(
+      create: (BuildContext context) {
+        return UserProvider();
+      },
+      child: MaterialApp.router(
+        theme: ThemeData(
+            primarySwatch: Colors.red,
+            fontFamily: 'DoHyeon',
+            hintColor: Colors.grey[350],
+            textTheme: TextTheme(
+              button: TextStyle(color: Colors.white),
+            ),
+            textButtonTheme: TextButtonThemeData(
+                style: TextButton.styleFrom(
+                    backgroundColor: Colors.red,
+                    primary: Colors.white,
+                    minimumSize: Size(48, 48))),
+            appBarTheme: AppBarTheme(
+                backgroundColor: Colors.white,
+                elevation: 2,
+                titleTextStyle: TextStyle(color: Colors.black87))),
+        routeInformationParser: BeamerParser(),
+        routerDelegate: _routerDelegate,
+      ),
     );
   }
 }

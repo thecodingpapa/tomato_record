@@ -70,7 +70,8 @@ class TomatoApp extends StatelessWidget {
             appBarTheme: AppBarTheme(
                 backgroundColor: Colors.white,
                 elevation: 2,
-                titleTextStyle: TextStyle(color: Colors.black87))),
+                titleTextStyle: TextStyle(color: Colors.black87),
+                actionsIconTheme: IconThemeData(color: Colors.black87))),
         routeInformationParser: BeamerParser(),
         routerDelegate: _routerDelegate,
       ),

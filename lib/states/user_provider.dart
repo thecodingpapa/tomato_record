@@ -1,7 +1,7 @@
 import 'package:flutter/widgets.dart';
 
 class UserProvider extends ChangeNotifier {
-  bool _userLoggedIn = true;
+  bool _userLoggedIn = false;
 
   void setUserAuth(bool authState) {
     _userLoggedIn = authState;

@@ -11,7 +11,7 @@ final _routerDelegate = BeamerDelegate(guards: [
   BeamGuard(
       pathBlueprints: ['/'],
       check: (context, location) {
-        return false;
+        return context.watch<UserProvider>().userState;
       },
       showPage: BeamPage(child: StartScreen()))
 ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));

@@ -1,5 +1,6 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.thecodingpapa.tomato_record">
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
    <application
         android:label="tomato_record"
         android:icon="@mipmap/ic_launcher">

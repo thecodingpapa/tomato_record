@@ -33,6 +33,9 @@ dependencies:
   beamer: ^0.14.1
   flutter_multi_formatter: ^2.3.3
   provider: ^6.0.0
+  dio: ^4.0.0
+  location: ^4.3.0
+  shared_preferences: ^2.0.7
 
 dev_dependencies:
   flutter_test:

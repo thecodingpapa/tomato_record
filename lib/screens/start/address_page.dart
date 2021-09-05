@@ -8,6 +8,7 @@ import 'package:tomato_record/data/address_model.dart';
 import 'package:tomato_record/data/address_model2.dart';
 import 'package:tomato_record/screens/start/address_service.dart';
 import 'package:tomato_record/utils/logger.dart';
+import 'package:provider/provider.dart';
 
 class AddressPage extends StatefulWidget {
   AddressPage({Key? key}) : super(key: key);
@@ -22,6 +23,12 @@ class _AddressPageState extends State<AddressPage> {
   AddressModel? _addressModel;
   List<AddressModel2> _addressModel2List = [];
   bool _isGettingLocation = false;
+
+  @override
+  void dispose() {
+    _addressController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -121,7 +128,7 @@ class _AddressPageState extends State<AddressPage> {
                     return Container();
                   return ListTile(
                     onTap: () {
-                      _saveAddressOnSharedPreference(
+                      _saveAddressAndGoToNextPage(
                           _addressModel!.result!.items![index].address!.road ??
                               "");
                     },
@@ -150,7 +157,7 @@ class _AddressPageState extends State<AddressPage> {
                     return Container();
                   return ListTile(
                     onTap: () {
-                      _saveAddressOnSharedPreference(
+                      _saveAddressAndGoToNextPage(
                           _addressModel2List[index].result![0].text ?? "");
                     },
                     title:
@@ -165,6 +172,13 @@ class _AddressPageState extends State<AddressPage> {
         ],
       ),
     );
+  }
+
+  _saveAddressAndGoToNextPage(String address) async {
+    await _saveAddressOnSharedPreference(address);
+
+    context.read<PageController>().animateToPage(2,
+        duration: Duration(milliseconds: 500), curve: Curves.ease);
   }
 
   _saveAddressOnSharedPreference(String address) async {

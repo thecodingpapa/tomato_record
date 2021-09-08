@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -28,6 +29,9 @@ class _AuthPageState extends State<AuthPage> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   VerificationStatus _verificationStatus = VerificationStatus.none;
+
+  String? _verificationId;
+  int? _forceResendingToken;
 
   @override
   Widget build(BuildContext context) {
@@ -89,18 +93,69 @@ class _AuthPageState extends State<AuthPage> {
                       height: common_sm_padding,
                     ),
                     TextButton(
-                        onPressed: () {
+                        onPressed: () async {
+                          if (_verificationStatus ==
+                              VerificationStatus.codeSending) return;
+
                           if (_formKey.currentState != null) {
                             bool passed = _formKey.currentState!.validate();
                             print(passed);
-                            if (passed)
+                            if (passed) {
+                              String phoneNum = _phoneNumberController.text;
+                              phoneNum = phoneNum.replaceAll(' ', '');
+                              phoneNum =
+                                  phoneNum.replaceFirst('0', ''); //1055555555
+
+                              FirebaseAuth auth = FirebaseAuth.instance;
+
                               setState(() {
                                 _verificationStatus =
-                                    VerificationStatus.codeSent;
+                                    VerificationStatus.codeSending;
                               });
+
+                              await auth.verifyPhoneNumber(
+                                phoneNumber: '+82$phoneNum',
+                                forceResendingToken: _forceResendingToken,
+                                verificationCompleted:
+                                    (PhoneAuthCredential credential) async {
+                                  logger
+                                      .d('verificationCompleted - $credential');
+                                  await auth.signInWithCredential(credential);
+                                },
+                                codeAutoRetrievalTimeout:
+                                    (String verificationId) {},
+                                codeSent: (String verificationId,
+                                    int? forceResendingToken) async {
+                                  setState(() {
+                                    _verificationStatus =
+                                        VerificationStatus.codeSent;
+                                  });
+                                  _verificationId = verificationId;
+                                  _forceResendingToken = forceResendingToken;
+                                },
+                                verificationFailed:
+                                    (FirebaseAuthException error) {
+                                  logger.e(error.message);
+
+                                  setState(() {
+                                    _verificationStatus =
+                                        VerificationStatus.none;
+                                  });
+                                },
+                              );
+                            }
                           }
                         },
-                        child: Text('인증문자 발송')),
+                        child: (_verificationStatus ==
+                                VerificationStatus.codeSending)
+                            ? SizedBox(
+                                height: 26,
+                                width: 26,
+                                child: CircularProgressIndicator(
+                                  color: Colors.white,
+                                ),
+                              )
+                            : Text('인증문자 발송')),
                     SizedBox(
                       height: common_padding,
                     ),
@@ -151,6 +206,7 @@ class _AuthPageState extends State<AuthPage> {
     switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codeSending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -162,6 +218,7 @@ class _AuthPageState extends State<AuthPage> {
     switch (status) {
       case VerificationStatus.none:
         return 0;
+      case VerificationStatus.codeSending:
       case VerificationStatus.codeSent:
       case VerificationStatus.verifying:
       case VerificationStatus.verificationDone:
@@ -173,14 +230,23 @@ class _AuthPageState extends State<AuthPage> {
     setState(() {
       _verificationStatus = VerificationStatus.verifying;
     });
+    try {
+      // Create a PhoneAuthCredential with the code
+      PhoneAuthCredential credential = PhoneAuthProvider.credential(
+          verificationId: _verificationId!, smsCode: _codeController.text);
 
-    await Future.delayed(Duration(seconds: 1));
-
+      // Sign the user in (or link) with the credential
+      await FirebaseAuth.instance.signInWithCredential(credential);
+    } catch (e) {
+      logger.e('verification failed!!');
+      SnackBar snackbar = SnackBar(
+        content: Text('입력하신 코드가 틀려요!'),
+      );
+      ScaffoldMessenger.of(context).showSnackBar(snackbar);
+    }
     setState(() {
       _verificationStatus = VerificationStatus.verificationDone;
     });
-
-    context.read<UserProvider>().setUserAuth(true);
   }
 
   _getAddress() async {
@@ -190,4 +256,10 @@ class _AuthPageState extends State<AuthPage> {
   }
 }
 
-enum VerificationStatus { none, codeSent, verifying, verificationDone }
+enum VerificationStatus {
+  none,
+  codeSending,
+  codeSent,
+  verifying,
+  verificationDone
+}

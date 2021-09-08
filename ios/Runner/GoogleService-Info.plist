@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CLIENT_ID</key>
+	<string>991789698622-uhhv9648g7midrrlmjujqihrf0nvvcti.apps.googleusercontent.com</string>
+	<key>REVERSED_CLIENT_ID</key>
+	<string>com.googleusercontent.apps.991789698622-uhhv9648g7midrrlmjujqihrf0nvvcti</string>
+	<key>ANDROID_CLIENT_ID</key>
+	<string>991789698622-casfs1otr3juqr71uh9mqv4rktkbmeoi.apps.googleusercontent.com</string>
+	<key>API_KEY</key>
+	<string>AIzaSyAINO29E2NmJcDvMUJjPArIBue8x01q_-o</string>
+	<key>GCM_SENDER_ID</key>
+	<string>991789698622</string>
+	<key>PLIST_VERSION</key>
+	<string>1</string>
+	<key>BUNDLE_ID</key>
+	<string>com.thecodingpapa.tomatoRecord</string>
+	<key>PROJECT_ID</key>
+	<string>tomato-record</string>
+	<key>STORAGE_BUCKET</key>
+	<string>tomato-record.appspot.com</string>
+	<key>IS_ADS_ENABLED</key>
+	<false></false>
+	<key>IS_ANALYTICS_ENABLED</key>
+	<false></false>
+	<key>IS_APPINVITE_ENABLED</key>
+	<true></true>
+	<key>IS_GCM_ENABLED</key>
+	<true></true>
+	<key>IS_SIGNIN_ENABLED</key>
+	<true></true>
+	<key>GOOGLE_APP_ID</key>
+	<string>1:991789698622:ios:6a53df66e16dc9c8d28b6f</string>
+</dict>
+</plist>

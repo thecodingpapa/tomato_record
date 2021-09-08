@@ -1,4 +1,5 @@
 import 'package:beamer/beamer.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
@@ -11,7 +12,7 @@ final _routerDelegate = BeamerDelegate(guards: [
   BeamGuard(
       pathBlueprints: ['/'],
       check: (context, location) {
-        return context.watch<UserProvider>().userState;
+        return context.watch<UserProvider>().user != null;
       },
       showPage: BeamPage(child: StartScreen()))
 ], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
@@ -19,14 +20,22 @@ final _routerDelegate = BeamerDelegate(guards: [
 void main() {
   logger.d('My first log by logger!!');
   Provider.debugCheckInvalidValueType = null;
+  WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  _MyAppState createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
+  final Future<FirebaseApp> _initialization = Firebase.initializeApp();
+
   @override
   Widget build(BuildContext context) {
     return FutureBuilder(
-        future: Future.delayed(Duration(milliseconds: 300), () => 100),
+        future: _initialization,
         builder: (context, snapshot) {
           return AnimatedSwitcher(
               duration: Duration(milliseconds: 300),
@@ -38,7 +47,7 @@ class MyApp extends StatelessWidget {
     if (snapshot.hasError) {
       print('error occur while loading.');
       return Text('Error occur');
-    } else if (snapshot.hasData) {
+    } else if (snapshot.connectionState == ConnectionState.done) {
       return TomatoApp();
     } else {
       return SplashScreen();

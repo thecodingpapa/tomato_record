@@ -4,7 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
-import 'package:tomato_record/states/user_provider.dart';
+import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/widgets/expandable_fab.dart';
 
 class HomeScreen extends StatefulWidget {

@@ -5,7 +5,7 @@ import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/start_screen.dart';
 import 'package:tomato_record/screens/splash_screen.dart';
-import 'package:tomato_record/states/user_provider.dart';
+import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/utils/logger.dart';
 
 final _routerDelegate = BeamerDelegate(
@@ -13,7 +13,7 @@ final _routerDelegate = BeamerDelegate(
       BeamGuard(
           pathBlueprints: ['/'],
           check: (context, location) {
-            return context.watch<UserProvider>().user != null;
+            return context.watch<UserNotifier>().user != null;
           },
           showPage: BeamPage(child: StartScreen()))
     ],
@@ -63,9 +63,9 @@ class TomatoApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ChangeNotifierProvider<UserProvider>(
+    return ChangeNotifierProvider<UserNotifier>(
       create: (BuildContext context) {
-        return UserProvider();
+        return UserNotifier();
       },
       child: MaterialApp.router(
         theme: ThemeData(

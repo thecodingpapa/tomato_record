@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
-import 'package:tomato_record/states/user_provider.dart';
+import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/utils/logger.dart';
 import 'package:provider/provider.dart';
 

@@ -5,7 +5,7 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/constants/shared_pref_keys.dart';
-import 'package:tomato_record/states/user_provider.dart';
+import 'package:tomato_record/states/user_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/utils/logger.dart';
 

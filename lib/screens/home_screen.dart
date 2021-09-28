@@ -1,3 +1,4 @@
+import 'package:beamer/src/beamer.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -38,7 +39,9 @@ class _HomeScreenState extends State<HomeScreen> {
         distance: 90,
         children: [
           MaterialButton(
-            onPressed: () {},
+            onPressed: () {
+              context.beamToNamed('/input');
+            },
             shape: CircleBorder(),
             height: 40,
             color: Theme.of(context).colorScheme.primary,

@@ -31,7 +31,7 @@ dependencies:
   extended_image: ^4.1.0
   logger: ^1.0.0
   beamer: ^0.14.1
-  flutter_multi_formatter: ^2.3.3
+  flutter_multi_formatter: ^2.3.8
   provider: ^6.0.0
   dio: ^4.0.0
   location: ^4.3.0

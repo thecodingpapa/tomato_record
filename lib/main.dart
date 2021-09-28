@@ -8,14 +8,17 @@ import 'package:tomato_record/screens/splash_screen.dart';
 import 'package:tomato_record/states/user_provider.dart';
 import 'package:tomato_record/utils/logger.dart';
 
-final _routerDelegate = BeamerDelegate(guards: [
-  BeamGuard(
-      pathBlueprints: ['/'],
-      check: (context, location) {
-        return context.watch<UserProvider>().user != null;
-      },
-      showPage: BeamPage(child: StartScreen()))
-], locationBuilder: BeamerLocationBuilder(beamLocations: [HomeLocation()]));
+final _routerDelegate = BeamerDelegate(
+    guards: [
+      BeamGuard(
+          pathBlueprints: ['/'],
+          check: (context, location) {
+            return context.watch<UserProvider>().user != null;
+          },
+          showPage: BeamPage(child: StartScreen()))
+    ],
+    locationBuilder: BeamerLocationBuilder(
+        beamLocations: [HomeLocation(), InputLocation()]));
 
 void main() {
   logger.d('My first log by logger!!');
@@ -73,6 +76,10 @@ class TomatoApp extends StatelessWidget {
               button: TextStyle(color: Colors.white),
               subtitle1: TextStyle(color: Colors.black87, fontSize: 15),
               subtitle2: TextStyle(color: Colors.grey, fontSize: 13),
+              bodyText2: TextStyle(
+                  color: Colors.black87,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w300),
             ),
             textButtonTheme: TextButtonThemeData(
                 style: TextButton.styleFrom(
@@ -81,6 +88,7 @@ class TomatoApp extends StatelessWidget {
                     minimumSize: Size(48, 48))),
             appBarTheme: AppBarTheme(
                 backgroundColor: Colors.white,
+                foregroundColor: Colors.black87,
                 elevation: 2,
                 titleTextStyle: TextStyle(color: Colors.black87),
                 actionsIconTheme: IconThemeData(color: Colors.black87)),

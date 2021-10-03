@@ -1,11 +1,13 @@
 import 'dart:typed_data';
 
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:beamer/beamer.dart';
 import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:tomato_record/constants/common_size.dart';
+import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/image_storage.dart';
 import 'package:tomato_record/screens/input/multi_image_select.dart';
 import 'package:provider/provider.dart';
@@ -36,6 +38,45 @@ class _InputScreenState extends State<InputScreen> {
   );
 
   bool isCreatingItem = false;
+
+  TextEditingController _titleController = TextEditingController();
+  TextEditingController _detailController = TextEditingController();
+
+  void attemptCreateItem() async {
+    if (FirebaseAuth.instance.currentUser == null) return;
+    isCreatingItem = true;
+    setState(() {});
+
+    final String userKey = FirebaseAuth.instance.currentUser!.uid;
+    final String itemKey = ItemModel.generateItemKey(userKey);
+
+    List<Uint8List> images = context.read<SelectImageNotifier>().images;
+
+    List<String> downloadUrls =
+        await ImageStorage.uploadImages(images, itemKey);
+
+    final num? price = num.tryParse(
+        _priceController.text.replaceAll('.', '').replaceAll('원', ''));
+
+    ItemModel itemModel = ItemModel(
+      itemKey: itemKey,
+      userKey: userKey,
+      imageDownloadUrls: downloadUrls,
+      title: _titleController.text,
+      category: context.read<CategoryNotifier>().currentCategoryInEng,
+      price: price ?? 0,
+      negotiable: _suggestPriceSelected,
+      detail: _detailController.text,
+      address: address,
+      geoFirePoint: geoFirePoint,
+      createdDate: createdDate,
+    );
+    logger.d('upload finished - ${downloadUrls.toString()}');
+
+    isCreatingItem = false;
+    setState(() {});
+  }
+
   @override
   Widget build(BuildContext context) {
     return LayoutBuilder(
@@ -71,21 +112,7 @@ class _InputScreenState extends State<InputScreen> {
               ),
               actions: [
                 TextButton(
-                    onPressed: () async {
-                      isCreatingItem = true;
-                      setState(() {});
-
-                      List<Uint8List> images =
-                          context.read<SelectImageNotifier>().images;
-
-                      List<String> downloadUrls =
-                          await ImageStorage.uploadImages(images);
-                      // ItemModel itemModel = ItemModel(itemKey: itemKey, userKey: userKey, imageDownloadUrls: imageDownloadUrls, title: title, category: category, price: price, negotiable: negotiable, detail: detail, address: address, geoFirePoint: geoFirePoint, createdDate: createdDate)
-                      logger.d('upload finished - ${downloadUrls.toString()}');
-
-                      isCreatingItem = false;
-                      setState(() {});
-                    },
+                    onPressed: attemptCreateItem,
                     style: TextButton.styleFrom(
                         primary: Colors.black87,
                         backgroundColor:
@@ -101,6 +128,7 @@ class _InputScreenState extends State<InputScreen> {
                 MultiImageSelect(),
                 _divider,
                 TextFormField(
+                  controller: _titleController,
                   decoration: InputDecoration(
                       hintText: '글 제목',
                       contentPadding:

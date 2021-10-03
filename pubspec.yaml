@@ -36,9 +36,10 @@ dependencies:
   dio: ^4.0.0
   location: ^4.3.0
   shared_preferences: ^2.0.7
-  firebase_core: ^1.5.0
+  firebase_core: ^1.7.0
   firebase_auth: ^3.0.2
-  cloud_firestore: ^2.5.0
+  cloud_firestore: ^2.5.3
+  firebase_storage: ^10.0.4
   shimmer: ^2.0.0
   geoflutterfire: ^3.0.1
   image_picker: ^0.8.4+2

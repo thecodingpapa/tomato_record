@@ -7,7 +7,7 @@ class UserModel {
   late String address;
   late GeoFirePoint geoFirePoint;
   late DateTime createdDate;
-  DocumentReference? refernce;
+  DocumentReference? reference;
 
   UserModel(
       {required this.userKey,
@@ -15,9 +15,9 @@ class UserModel {
       required this.address,
       required this.geoFirePoint,
       required this.createdDate,
-      this.refernce});
+      this.reference});
 
-  UserModel.fromJson(Map<String, dynamic> json, this.userKey, this.refernce)
+  UserModel.fromJson(Map<String, dynamic> json, this.userKey, this.reference)
       : phoneNumber = json['phoneNumber'],
         address = json['address'],
         geoFirePoint = GeoFirePoint((json['geoFirePoint']['geopoint']).latitude,

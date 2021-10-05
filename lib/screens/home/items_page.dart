@@ -3,6 +3,8 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:shimmer/shimmer.dart';
+import 'package:tomato_record/data/item_model.dart';
+import 'package:tomato_record/repo/item_service.dart';
 import 'package:tomato_record/repo/user_service.dart';
 
 class ItemsPage extends StatelessWidget {
@@ -15,21 +17,21 @@ class ItemsPage extends StatelessWidget {
         Size size = MediaQuery.of(context).size;
         final imgSize = size.width / 4;
 
-        return FutureBuilder(
-            future: Future.delayed(Duration(seconds: 2)),
+        return FutureBuilder<List<ItemModel>>(
+            future: ItemService().getItems(),
             builder: (context, snapshot) {
               return AnimatedSwitcher(
                   duration: Duration(milliseconds: 300),
-                  child: (snapshot.connectionState != ConnectionState.done)
-                      ? _shimmerListView(imgSize)
-                      : _listView(imgSize));
+                  child: (snapshot.hasData && snapshot.data!.isNotEmpty)
+                      ? _listView(imgSize, snapshot.data!)
+                      : _shimmerListView(imgSize));
             });
         // return _listView(imgSize);
       },
     );
   }
 
-  ListView _listView(double imgSize) {
+  ListView _listView(double imgSize, List<ItemModel> items) {
     return ListView.separated(
       padding: EdgeInsets.all(common_padding),
       separatorBuilder: (context, index) {
@@ -42,10 +44,9 @@ class ItemsPage extends StatelessWidget {
         );
       },
       itemBuilder: (context, index) {
+        ItemModel item = items[index];
         return InkWell(
-          onTap: () {
-            UserService().firestoreReadTest();
-          },
+          onTap: () {},
           child: SizedBox(
             height: imgSize,
             child: Row(
@@ -54,7 +55,8 @@ class ItemsPage extends StatelessWidget {
                     height: imgSize,
                     width: imgSize,
                     child: ExtendedImage.network(
-                      'https://picsum.photos/100',
+                      item.imageDownloadUrls[0],
+                      fit: BoxFit.cover,
                       shape: BoxShape.rectangle,
                       borderRadius: BorderRadius.circular(12),
                     )),
@@ -66,14 +68,14 @@ class ItemsPage extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Text(
-                      'work',
+                      item.title,
                       style: Theme.of(context).textTheme.subtitle1,
                     ),
                     Text(
                       '53일전',
                       style: Theme.of(context).textTheme.subtitle2,
                     ),
-                    Text('5000원'),
+                    Text('${item.price.toString()}원'),
                     Expanded(
                       child: Container(),
                     ),
@@ -115,7 +117,7 @@ class ItemsPage extends StatelessWidget {
           ),
         );
       },
-      itemCount: 10,
+      itemCount: items.length,
     );
   }
 

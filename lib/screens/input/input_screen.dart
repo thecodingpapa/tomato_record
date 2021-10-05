@@ -9,10 +9,12 @@ import 'package:flutter_multi_formatter/flutter_multi_formatter.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/image_storage.dart';
+import 'package:tomato_record/repo/item_service.dart';
 import 'package:tomato_record/screens/input/multi_image_select.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/select_image_notifier.dart';
+import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/utils/logger.dart';
 
 class InputScreen extends StatefulWidget {
@@ -52,6 +54,10 @@ class _InputScreenState extends State<InputScreen> {
 
     List<Uint8List> images = context.read<SelectImageNotifier>().images;
 
+    UserNotifier userNotifier = context.read<UserNotifier>();
+
+    if (userNotifier.userModel == null) return;
+
     List<String> downloadUrls =
         await ImageStorage.uploadImages(images, itemKey);
 
@@ -67,14 +73,15 @@ class _InputScreenState extends State<InputScreen> {
       price: price ?? 0,
       negotiable: _suggestPriceSelected,
       detail: _detailController.text,
-      address: address,
-      geoFirePoint: geoFirePoint,
-      createdDate: createdDate,
+      address: userNotifier.userModel!.address,
+      geoFirePoint: userNotifier.userModel!.geoFirePoint,
+      createdDate: DateTime.now().toUtc(),
     );
+
     logger.d('upload finished - ${downloadUrls.toString()}');
 
-    isCreatingItem = false;
-    setState(() {});
+    await ItemService().createNewItem(itemModel.toJson(), itemKey);
+    context.beamBack();
   }
 
   @override

@@ -47,6 +47,10 @@ class ItemModel {
         : (json['createdDate'] as Timestamp).toDate();
   }
 
+  ItemModel.fromQuerySnapshot(
+      QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
+      : this.fromJson(snapshot.data(), snapshot.id, snapshot.reference);
+
   ItemModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot)
       : this.fromJson(snapshot.data()!, snapshot.id, snapshot.reference);
 

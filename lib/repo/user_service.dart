@@ -26,19 +26,4 @@ class UserService {
     UserModel userModel = UserModel.fromSnapshot(documentSnapshot);
     return userModel;
   }
-
-  Future firestoreTest() async {
-    FirebaseFirestore.instance
-        .collection('TESTING_COLLECTION')
-        .add({'testing': 'testing value', 'number': 123123});
-  }
-
-  void firestoreReadTest() {
-    FirebaseFirestore.instance
-        .collection('TESTING_COLLECTION')
-        .doc('sAK3aIiGqhzWFu8zhlbt')
-        .get()
-        .then((DocumentSnapshot<Map<String, dynamic>> value) =>
-            logger.d(value.data()));
-  }
 }

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/widgets/expandable_fab.dart';
@@ -40,7 +41,7 @@ class _HomeScreenState extends State<HomeScreen> {
         children: [
           MaterialButton(
             onPressed: () {
-              context.beamToNamed('/input');
+              context.beamToNamed('/$LOCATION_INPUT');
             },
             shape: CircleBorder(),
             height: 40,

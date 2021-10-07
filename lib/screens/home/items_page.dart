@@ -5,7 +5,8 @@ import 'package:tomato_record/constants/common_size.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/item_service.dart';
-import 'package:tomato_record/repo/user_service.dart';
+import 'package:beamer/beamer.dart';
+import 'package:tomato_record/router/locations.dart';
 
 class ItemsPage extends StatelessWidget {
   const ItemsPage({Key? key}) : super(key: key);
@@ -46,7 +47,9 @@ class ItemsPage extends StatelessWidget {
       itemBuilder: (context, index) {
         ItemModel item = items[index];
         return InkWell(
-          onTap: () {},
+          onTap: () {
+            context.beamToNamed('/$LOCATION_ITEM/:${item.itemKey}');
+          },
           child: SizedBox(
             height: imgSize,
             child: Row(

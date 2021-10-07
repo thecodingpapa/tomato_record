@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:tomato_record/utils/logger.dart';
 
 CategoryNotifier categoryNotifier = CategoryNotifier();
 
@@ -6,8 +7,10 @@ class CategoryNotifier extends ChangeNotifier {
   String _selectedCategoryInEng = 'none';
 
   String get currentCategoryInEng => _selectedCategoryInEng;
-  String get currentCategoryInKor =>
-      categoriesMapEngToKor[_selectedCategoryInEng]!;
+  String get currentCategoryInKor {
+    logger.d("currentCategoryInKor called!!!!");
+    return categoriesMapEngToKor[_selectedCategoryInEng]!;
+  }
 
   void setNewCategoryWithEng(String newCategory) {
     if (categoriesMapEngToKor.keys.contains(newCategory)) {

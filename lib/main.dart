@@ -11,14 +11,18 @@ import 'package:tomato_record/utils/logger.dart';
 final _routerDelegate = BeamerDelegate(
     guards: [
       BeamGuard(
-          pathBlueprints: ['/'],
+          pathBlueprints: [
+            ...HomeLocation().pathBlueprints,
+            ...InputLocation().pathBlueprints,
+            ...ItemLocation().pathBlueprints
+          ],
           check: (context, location) {
             return context.watch<UserNotifier>().user != null;
           },
           showPage: BeamPage(child: StartScreen()))
     ],
     locationBuilder: BeamerLocationBuilder(
-        beamLocations: [HomeLocation(), InputLocation()]));
+        beamLocations: [HomeLocation(), InputLocation(), ItemLocation()]));
 
 void main() {
   logger.d('My first log by logger!!');

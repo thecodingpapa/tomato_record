@@ -10,6 +10,7 @@ import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/image_storage.dart';
 import 'package:tomato_record/repo/item_service.dart';
+import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/input/multi_image_select.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/states/category_notifier.dart';
@@ -147,7 +148,8 @@ class _InputScreenState extends State<InputScreen> {
                 _divider,
                 ListTile(
                   onTap: () {
-                    context.beamToNamed('/input/category_input');
+                    context.beamToNamed(
+                        '/$LOCATION_INPUT/$LOCATION_CATEGORY_INPUT');
                   },
                   dense: true,
                   title: Text(

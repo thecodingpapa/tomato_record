@@ -15,6 +15,31 @@ class ItemDetailScreen extends StatefulWidget {
 
 class _ItemDetailScreenState extends State<ItemDetailScreen> {
   PageController _pageController = PageController();
+  ScrollController _scrollController = ScrollController();
+  Size? _size;
+  num? _statusBarHeight;
+  bool isAppbarCollapsed = false;
+  @override
+  void initState() {
+    _scrollController.addListener(() {
+      if (_size == null || _statusBarHeight == null) return;
+      if (isAppbarCollapsed) {
+        if (_scrollController.offset <
+            _size!.width - kToolbarHeight - _statusBarHeight!) {
+          isAppbarCollapsed = false;
+          setState(() {});
+        }
+      } else {
+        if (_scrollController.offset >
+            _size!.width - kToolbarHeight - _statusBarHeight!) {
+          isAppbarCollapsed = true;
+          setState(() {});
+        }
+      }
+    });
+    super.initState();
+  }
+
   @override
   void dispose() {
     _pageController.dispose();
@@ -30,15 +55,17 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             ItemModel itemModel = snapshot.data!;
             return LayoutBuilder(
               builder: (context, constraints) {
-                Size _size = MediaQuery.of(context).size;
+                _size = MediaQuery.of(context).size;
+                _statusBarHeight = MediaQuery.of(context).padding.top;
                 return Stack(
                   fit: StackFit.expand,
                   children: [
                     Scaffold(
                       body: CustomScrollView(
+                        controller: _scrollController,
                         slivers: [
                           SliverAppBar(
-                            expandedHeight: _size.width,
+                            expandedHeight: _size!.width,
                             pinned: true,
                             flexibleSpace: FlexibleSpaceBar(
                               title: SizedBox(
@@ -75,7 +102,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                           ),
                           SliverToBoxAdapter(
                             child: Container(
-                              height: _size.height * 2,
+                              height: _size!.height * 2,
                               color: Colors.cyan,
                               child: Center(
                                   child: Text('item key is ${widget.itemKey}')),
@@ -84,6 +111,43 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                         ],
                       ),
                     ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      height: kToolbarHeight + _statusBarHeight!,
+                      child: Container(
+                        height: kToolbarHeight + _statusBarHeight!,
+                        decoration: BoxDecoration(
+                            gradient: LinearGradient(
+                                begin: Alignment.topCenter,
+                                end: Alignment.bottomCenter,
+                                colors: [
+                              Colors.black12,
+                              Colors.black12,
+                              Colors.black12,
+                              Colors.black12,
+                              Colors.transparent
+                            ])),
+                      ),
+                    ),
+                    Positioned(
+                      left: 0,
+                      right: 0,
+                      top: 0,
+                      height: kToolbarHeight + _statusBarHeight!,
+                      child: Scaffold(
+                        backgroundColor: Colors.transparent,
+                        appBar: AppBar(
+                          shadowColor: Colors.transparent,
+                          backgroundColor: isAppbarCollapsed
+                              ? Colors.white
+                              : Colors.transparent,
+                          foregroundColor:
+                              isAppbarCollapsed ? Colors.black87 : Colors.white,
+                        ),
+                      ),
+                    )
                   ],
                 );
               },

@@ -40,49 +40,37 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                           SliverAppBar(
                             expandedHeight: _size.width,
                             pinned: true,
-                            flexibleSpace: Stack(
-                              children: [
-                                FlexibleSpaceBar(
-                                  background: PageView.builder(
-                                    controller: _pageController,
-                                    allowImplicitScrolling: true,
-                                    itemBuilder: (context, index) {
-                                      return ExtendedImage.network(
-                                        itemModel.imageDownloadUrls[index],
-                                        fit: BoxFit.cover,
-                                        scale: 0.1,
-                                      );
-                                    },
-                                    itemCount:
-                                        itemModel.imageDownloadUrls.length,
-                                  ),
-                                ),
-                                Positioned(
-                                  left: 0,
-                                  right: 0,
-                                  bottom: common_sm_padding,
-                                  child: Container(
-                                    child: Center(
-                                      child: SmoothPageIndicator(
-                                          controller:
-                                              _pageController, // PageController
-                                          count: itemModel
-                                              .imageDownloadUrls.length,
-                                          effect: WormEffect(
-                                              activeDotColor: Theme.of(context)
-                                                  .primaryColor,
-                                              dotColor: Theme.of(context)
-                                                  .colorScheme
-                                                  .background,
-                                              radius: 4,
-                                              dotHeight: 8,
-                                              dotWidth:
-                                                  8), // yo// ur preferred effect
-                                          onDotClicked: (index) {}),
-                                    ),
-                                  ),
-                                )
-                              ],
+                            flexibleSpace: FlexibleSpaceBar(
+                              title: SizedBox(
+                                child: SmoothPageIndicator(
+                                    controller:
+                                        _pageController, // PageController
+                                    count: itemModel.imageDownloadUrls.length,
+                                    effect: WormEffect(
+                                        activeDotColor:
+                                            Theme.of(context).primaryColor,
+                                        dotColor: Theme.of(context)
+                                            .colorScheme
+                                            .background,
+                                        radius: 2,
+                                        dotHeight: 4,
+                                        dotWidth:
+                                            4), // yo// ur preferred effect
+                                    onDotClicked: (index) {}),
+                              ),
+                              centerTitle: true,
+                              background: PageView.builder(
+                                controller: _pageController,
+                                allowImplicitScrolling: true,
+                                itemBuilder: (context, index) {
+                                  return ExtendedImage.network(
+                                    itemModel.imageDownloadUrls[index],
+                                    fit: BoxFit.cover,
+                                    scale: 0.1,
+                                  );
+                                },
+                                itemCount: itemModel.imageDownloadUrls.length,
+                              ),
                             ),
                           ),
                           SliverToBoxAdapter(

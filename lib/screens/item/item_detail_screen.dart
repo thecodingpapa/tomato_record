@@ -19,6 +19,14 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   Size? _size;
   num? _statusBarHeight;
   bool isAppbarCollapsed = false;
+  Widget _textGap = SizedBox(
+    height: common_padding,
+  );
+  Widget _divider = Divider(
+    height: common_padding * 2 + 2,
+    thickness: 2,
+    color: Colors.grey[200],
+  );
   @override
   void initState() {
     _scrollController.addListener(() {
@@ -113,45 +121,104 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                       body: CustomScrollView(
                         controller: _scrollController,
                         slivers: [
-                          SliverAppBar(
-                            expandedHeight: _size!.width,
-                            pinned: true,
-                            flexibleSpace: FlexibleSpaceBar(
-                              title: SizedBox(
-                                child: SmoothPageIndicator(
-                                    controller:
-                                        _pageController, // PageController
-                                    count: itemModel.imageDownloadUrls.length,
-                                    effect: WormEffect(
-                                        activeDotColor:
-                                            Theme.of(context).primaryColor,
-                                        dotColor: Theme.of(context)
-                                            .colorScheme
-                                            .background,
-                                        radius: 2,
-                                        dotHeight: 4,
-                                        dotWidth:
-                                            4), // yo// ur preferred effect
-                                    onDotClicked: (index) {}),
+                          _imagesAppBar(itemModel),
+                          SliverPadding(
+                            padding: EdgeInsets.all(common_padding),
+                            sliver: SliverList(
+                                delegate: SliverChildListDelegate([
+                              _userSection(),
+                              _divider,
+                              Text(
+                                '카즈미 캠핑 키친 툴!!',
+                                style: Theme.of(context).textTheme.headline6,
                               ),
-                              centerTitle: true,
-                              background: PageView.builder(
-                                controller: _pageController,
-                                allowImplicitScrolling: true,
-                                itemBuilder: (context, index) {
-                                  return ExtendedImage.network(
-                                    itemModel.imageDownloadUrls[index],
-                                    fit: BoxFit.cover,
-                                    scale: 0.1,
-                                  );
-                                },
-                                itemCount: itemModel.imageDownloadUrls.length,
+                              _textGap,
+                              Row(
+                                children: [
+                                  Text(
+                                    '스포츠/레져',
+                                    style: Theme.of(context)
+                                        .textTheme
+                                        .bodyText2!
+                                        .copyWith(
+                                            decoration:
+                                                TextDecoration.underline),
+                                  ),
+                                  Text(
+                                    ' · 2분 전',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText2,
+                                  ),
+                                ],
                               ),
-                            ),
+                              _textGap,
+                              Text(
+                                '''카즈미 쉐프 박스 한번 사용했어요.
+흠집이나 하자없고 깨끗합니다.''',
+                                style: Theme.of(context).textTheme.bodyText1,
+                              ),
+                              _textGap,
+                              Text(
+                                '조회 33',
+                                style: Theme.of(context).textTheme.caption,
+                              ),
+                              _textGap,
+                              Divider(
+                                height: 2,
+                                thickness: 2,
+                                color: Colors.grey[200],
+                              ),
+                              MaterialButton(
+                                  padding: EdgeInsets.zero,
+                                  onPressed: () {},
+                                  child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Text(
+                                        '이 게시글 신고하기',
+                                      ))),
+                              Divider(
+                                height: 2,
+                                thickness: 2,
+                                color: Colors.grey[200],
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Text(
+                                    '무무님의 판매 상품',
+                                    style:
+                                        Theme.of(context).textTheme.bodyText1,
+                                  ),
+                                  SizedBox(
+                                    width: _size!.width / 4,
+                                    child: MaterialButton(
+                                      padding: EdgeInsets.zero,
+                                      onPressed: () {},
+                                      child: Align(
+                                        alignment: Alignment.centerRight,
+                                        child: Text(
+                                          '더보기',
+                                          style: Theme.of(context)
+                                              .textTheme
+                                              .button!
+                                              .copyWith(color: Colors.grey),
+                                        ),
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              )
+                            ])),
                           ),
-                          SliverList(
-                              delegate:
-                                  SliverChildListDelegate([_userSection()]))
+                          SliverGrid.count(
+                            crossAxisCount: 2,
+                            children: List.generate(
+                                10,
+                                (index) => Container(
+                                      color: Colors.accents[index],
+                                    )),
+                          )
                         ],
                       ),
                     ),
@@ -201,93 +268,124 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         });
   }
 
+  SliverAppBar _imagesAppBar(ItemModel itemModel) {
+    return SliverAppBar(
+      expandedHeight: _size!.width,
+      pinned: true,
+      flexibleSpace: FlexibleSpaceBar(
+        title: SizedBox(
+          child: SmoothPageIndicator(
+              controller: _pageController, // PageController
+              count: itemModel.imageDownloadUrls.length,
+              effect: WormEffect(
+                  dotColor: Colors.white24,
+                  activeDotColor: Colors.white,
+                  radius: 2,
+                  dotHeight: 4,
+                  dotWidth: 4), // yo// ur preferred effect
+              onDotClicked: (index) {}),
+        ),
+        centerTitle: true,
+        background: PageView.builder(
+          controller: _pageController,
+          allowImplicitScrolling: true,
+          itemBuilder: (context, index) {
+            return ExtendedImage.network(
+              itemModel.imageDownloadUrls[index],
+              fit: BoxFit.cover,
+              scale: 0.1,
+            );
+          },
+          itemCount: itemModel.imageDownloadUrls.length,
+        ),
+      ),
+    );
+  }
+
   Widget _userSection() {
-    return Padding(
-      padding: const EdgeInsets.all(common_sm_padding),
-      child: Row(
-        children: [
-          ExtendedImage.network(
-            'https://picsum.photos/50',
-            fit: BoxFit.cover,
-            width: _size!.width / 10,
-            height: _size!.width / 10,
-            shape: BoxShape.circle,
-          ),
-          SizedBox(
-            width: common_sm_padding,
-          ),
-          SizedBox(
-            height: _size!.width / 10,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  '무무',
-                  style: Theme.of(context).textTheme.bodyText1,
-                ),
-                Text(
-                  '배곧동',
-                  style: Theme.of(context).textTheme.bodyText2,
-                ),
-              ],
-            ),
-          ),
-          Expanded(child: Container()),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
+    return Row(
+      children: [
+        ExtendedImage.network(
+          'https://picsum.photos/50',
+          fit: BoxFit.cover,
+          width: _size!.width / 10,
+          height: _size!.width / 10,
+          shape: BoxShape.circle,
+        ),
+        SizedBox(
+          width: common_sm_padding,
+        ),
+        SizedBox(
+          height: _size!.width / 10,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Row(
-                children: [
-                  SizedBox(
-                    width: 42,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.stretch,
-                      children: [
-                        FittedBox(
-                          child: Text(
-                            '37.3°C',
-                            style: TextStyle(
-                                fontWeight: FontWeight.bold,
-                                color: Colors.blueAccent),
-                          ),
-                        ),
-                        SizedBox(height: 6),
-                        ClipRRect(
-                          borderRadius: BorderRadius.circular(1),
-                          child: LinearProgressIndicator(
-                            color: Colors.blueAccent,
-                            value: 0.373,
-                            minHeight: 3,
-                            backgroundColor: Colors.grey[200],
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                  SizedBox(
-                    width: 6,
-                  ),
-                  ImageIcon(
-                    ExtendedAssetImageProvider('assets/imgs/happiness.png'),
-                    color: Colors.blueAccent,
-                  )
-                ],
-              ),
-              SizedBox(
-                height: 6,
+              Text(
+                '무무',
+                style: Theme.of(context).textTheme.bodyText1,
               ),
               Text(
-                '매너온도',
-                style: Theme.of(context)
-                    .textTheme
-                    .bodyText2!
-                    .copyWith(decoration: TextDecoration.underline),
+                '배곧동',
+                style: Theme.of(context).textTheme.bodyText2,
               ),
             ],
           ),
-        ],
-      ),
+        ),
+        Expanded(child: Container()),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          children: [
+            Row(
+              children: [
+                SizedBox(
+                  width: 42,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FittedBox(
+                        child: Text(
+                          '37.3°C',
+                          style: TextStyle(
+                              fontWeight: FontWeight.bold,
+                              color: Colors.blueAccent),
+                        ),
+                      ),
+                      SizedBox(height: 6),
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(1),
+                        child: LinearProgressIndicator(
+                          color: Colors.blueAccent,
+                          value: 0.373,
+                          minHeight: 3,
+                          backgroundColor: Colors.grey[200],
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                SizedBox(
+                  width: 6,
+                ),
+                ImageIcon(
+                  ExtendedAssetImageProvider('assets/imgs/happiness.png'),
+                  color: Colors.blueAccent,
+                )
+              ],
+            ),
+            SizedBox(
+              height: 6,
+            ),
+            Text(
+              '매너온도',
+              style: Theme.of(context)
+                  .textTheme
+                  .bodyText2!
+                  .copyWith(decoration: TextDecoration.underline),
+            ),
+          ],
+        ),
+      ],
     );
   }
 }

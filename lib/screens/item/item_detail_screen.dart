@@ -61,6 +61,55 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                   fit: StackFit.expand,
                   children: [
                     Scaffold(
+                      bottomNavigationBar: SafeArea(
+                        top: false,
+                        bottom: true,
+                        child: Container(
+                          height: 60,
+                          decoration: BoxDecoration(
+                              border: Border(
+                                  top: BorderSide(color: Colors.grey[300]!))),
+                          child: Padding(
+                            padding: const EdgeInsets.all(common_sm_padding),
+                            child: Row(
+                              children: [
+                                IconButton(
+                                  icon: Icon(Icons.favorite_border),
+                                  onPressed: () {},
+                                ),
+                                VerticalDivider(
+                                  thickness: 1,
+                                  width: common_sm_padding * 2 + 1,
+                                  indent: common_sm_padding,
+                                  endIndent: common_sm_padding,
+                                ),
+                                Column(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceEvenly,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      '4000원',
+                                      style:
+                                          Theme.of(context).textTheme.bodyText1,
+                                    ),
+                                    Text(
+                                      '가격제안불가',
+                                      style:
+                                          Theme.of(context).textTheme.bodyText2,
+                                    ),
+                                  ],
+                                ),
+                                Expanded(
+                                  child: Container(),
+                                ),
+                                TextButton(
+                                    onPressed: () {}, child: Text('채팅으로 거래하기'))
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
                       body: CustomScrollView(
                         controller: _scrollController,
                         slivers: [

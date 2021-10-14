@@ -4,6 +4,7 @@ import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/item_service.dart';
+import 'package:tomato_record/screens/item/similar_item.dart';
 
 class ItemDetailScreen extends StatefulWidget {
   final String itemKey;
@@ -211,13 +212,16 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               )
                             ])),
                           ),
-                          SliverGrid.count(
-                            crossAxisCount: 2,
-                            children: List.generate(
-                                10,
-                                (index) => Container(
-                                      color: Colors.accents[index],
-                                    )),
+                          SliverPadding(
+                            padding: EdgeInsets.all(common_sm_padding),
+                            sliver: SliverGrid.count(
+                              crossAxisCount: 2,
+                              mainAxisSpacing: common_sm_padding,
+                              crossAxisSpacing: common_sm_padding,
+                              childAspectRatio: 6 / 7,
+                              children:
+                                  List.generate(10, (index) => SimilarItem()),
+                            ),
                           )
                         ],
                       ),

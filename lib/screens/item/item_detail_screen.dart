@@ -3,8 +3,13 @@ import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/data/item_model.dart';
+import 'package:tomato_record/data/user_model.dart';
 import 'package:tomato_record/repo/item_service.dart';
 import 'package:tomato_record/screens/item/similar_item.dart';
+import 'package:tomato_record/states/category_notifier.dart';
+import 'package:tomato_record/states/user_notifier.dart';
+import 'package:provider/provider.dart';
+import 'package:tomato_record/utils/time_calculation.dart';
 
 class ItemDetailScreen extends StatefulWidget {
   final String itemKey;
@@ -62,6 +67,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             ItemModel itemModel = snapshot.data!;
+            UserModel userModel = context.read<UserNotifier>().userModel!;
             return LayoutBuilder(
               builder: (context, constraints) {
                 _size = MediaQuery.of(context).size;
@@ -127,17 +133,18 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                             padding: EdgeInsets.all(common_padding),
                             sliver: SliverList(
                                 delegate: SliverChildListDelegate([
-                              _userSection(),
+                              _userSection(userModel),
                               _divider,
                               Text(
-                                '카즈미 캠핑 키친 툴!!',
+                                itemModel.title,
                                 style: Theme.of(context).textTheme.headline6,
                               ),
                               _textGap,
                               Row(
                                 children: [
                                   Text(
-                                    '스포츠/레져',
+                                    categoriesMapEngToKor[itemModel.category] ??
+                                        "선택",
                                     style: Theme.of(context)
                                         .textTheme
                                         .bodyText2!
@@ -146,7 +153,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                                 TextDecoration.underline),
                                   ),
                                   Text(
-                                    ' · 2분 전',
+                                    ' · ${TimeCalculation.getTimeDiff(itemModel.createdDate)}',
                                     style:
                                         Theme.of(context).textTheme.bodyText2,
                                   ),
@@ -154,8 +161,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                               ),
                               _textGap,
                               Text(
-                                '''카즈미 쉐프 박스 한번 사용했어요.
-흠집이나 하자없고 깨끗합니다.''',
+                                itemModel.detail,
                                 style: Theme.of(context).textTheme.bodyText1,
                               ),
                               _textGap,
@@ -187,7 +193,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    '무무님의 판매 상품',
+                                    '${userModel.phoneNumber.substring(9)}님의 판매 상품',
                                     style:
                                         Theme.of(context).textTheme.bodyText1,
                                   ),
@@ -306,7 +312,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     );
   }
 
-  Widget _userSection() {
+  Widget _userSection(UserModel userModel) {
     return Row(
       children: [
         ExtendedImage.network(
@@ -326,11 +332,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               Text(
-                '무무',
+                userModel.phoneNumber.substring(9), //+821055555555
                 style: Theme.of(context).textTheme.bodyText1,
               ),
               Text(
-                '배곧동',
+                userModel.address,
                 style: Theme.of(context).textTheme.bodyText2,
               ),
             ],

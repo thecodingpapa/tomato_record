@@ -310,6 +310,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.6.3"
+  latlng:
+    dependency: "direct main"
+    description:
+      name: latlng
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "0.1.0"
   location:
     dependency: "direct main"
     description:
@@ -335,6 +342,13 @@ packages:
     dependency: "direct main"
     description:
       name: logger
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0"
+  map:
+    dependency: "direct main"
+    description:
+      name: map
       url: "https://pub.dartlang.org"
     source: hosted
     version: "1.0.0"

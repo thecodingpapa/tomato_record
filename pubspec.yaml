@@ -44,6 +44,8 @@ dependencies:
   geoflutterfire: ^3.0.1
   image_picker: ^0.8.4+2
   smooth_page_indicator: ^1.0.0+2
+  map: ^1.0.0
+  latlng: ^0.1.0
 
 dev_dependencies:
   flutter_test:

@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
+import 'package:tomato_record/screens/home/map_page.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:tomato_record/widgets/expandable_fab.dart';
 
@@ -25,9 +26,7 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _bottomSelectedIndex,
         children: [
           ItemsPage(),
-          Container(
-            color: Colors.accents[3],
-          ),
+          MapPage(),
           Container(
             color: Colors.accents[6],
           ),

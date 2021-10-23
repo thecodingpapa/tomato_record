@@ -1,9 +1,11 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
+import 'package:tomato_record/data/item_model.dart';
 
 class SimilarItem extends StatelessWidget {
-  const SimilarItem({Key? key}) : super(key: key);
+  final ItemModel _itemModel;
+  const SimilarItem(this._itemModel, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -14,14 +16,14 @@ class SimilarItem extends StatelessWidget {
         AspectRatio(
           aspectRatio: 5 / 4,
           child: ExtendedImage.network(
-            'https://picsum.photos/100',
+            _itemModel.imageDownloadUrls[0],
             fit: BoxFit.cover,
             borderRadius: BorderRadius.circular(8),
             shape: BoxShape.rectangle,
           ),
         ),
         Text(
-          '인텍스 매트리스 듀라빔 플랙스 엑스트라 베스',
+          _itemModel.title,
           overflow: TextOverflow.ellipsis,
           maxLines: 1,
           style: Theme.of(context).textTheme.subtitle1,
@@ -29,7 +31,7 @@ class SimilarItem extends StatelessWidget {
         Padding(
           padding: const EdgeInsets.only(bottom: common_sm_padding),
           child: Text(
-            '4000원',
+            '${_itemModel.price.toString()}원',
             style: Theme.of(context).textTheme.subtitle2,
           ),
         )

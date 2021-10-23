@@ -7,13 +7,23 @@ class ItemService {
   factory ItemService() => _itemService;
   ItemService._internal();
 
-  Future createNewItem(Map<String, dynamic> json, String itemKey) async {
-    DocumentReference<Map<String, dynamic>> documentReference =
+  Future createNewItem(
+      ItemModel itemModel, String itemKey, String userKey) async {
+    DocumentReference<Map<String, dynamic>> itemDocReference =
         FirebaseFirestore.instance.collection(COL_ITEMS).doc(itemKey);
-    final DocumentSnapshot documentSnapshot = await documentReference.get();
+    DocumentReference<Map<String, dynamic>> userItemDocReference =
+        FirebaseFirestore.instance
+            .collection(COL_USERS)
+            .doc(userKey)
+            .collection(COL_USER_ITEMS)
+            .doc(itemKey);
+    final DocumentSnapshot documentSnapshot = await itemDocReference.get();
 
     if (!documentSnapshot.exists) {
-      await documentReference.set(json);
+      await FirebaseFirestore.instance.runTransaction((transaction) async {
+        transaction.set(itemDocReference, itemModel.toJson());
+        transaction.set(userItemDocReference, itemModel.toMinJson());
+      });
     }
   }
 
@@ -37,6 +47,27 @@ class ItemService {
     for (int i = 0; i < snapshots.size; i++) {
       ItemModel itemModel = ItemModel.fromQuerySnapshot(snapshots.docs[i]);
       items.add(itemModel);
+    }
+
+    return items;
+  }
+
+  Future<List<ItemModel>> getUserItems(String userKey,
+      {String? itemKey}) async {
+    CollectionReference<Map<String, dynamic>> collectionReference =
+        FirebaseFirestore.instance
+            .collection(COL_USERS)
+            .doc(userKey)
+            .collection(COL_USER_ITEMS);
+    QuerySnapshot<Map<String, dynamic>> snapshots =
+        await collectionReference.get();
+
+    List<ItemModel> items = [];
+
+    for (int i = 0; i < snapshots.size; i++) {
+      ItemModel itemModel = ItemModel.fromQuerySnapshot(snapshots.docs[i]);
+      if (!(itemKey != null && itemKey == itemModel.itemKey))
+        items.add(itemModel);
     }
 
     return items;

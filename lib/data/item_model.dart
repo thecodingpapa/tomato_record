@@ -40,8 +40,10 @@ class ItemModel {
     negotiable = json['negotiable'] ?? false;
     detail = json['detail'] ?? "";
     address = json['address'] ?? "";
-    geoFirePoint = GeoFirePoint((json['geoFirePoint']['geopoint']).latitude,
-        (json['geoFirePoint']['geopoint']).longitude);
+    geoFirePoint = json['geoFirePoint'] == null
+        ? GeoFirePoint(0, 0)
+        : GeoFirePoint((json['geoFirePoint']['geopoint']).latitude,
+            (json['geoFirePoint']['geopoint']).longitude);
     createdDate = json['createdDate'] == null
         ? DateTime.now().toUtc()
         : (json['createdDate'] as Timestamp).toDate();
@@ -66,6 +68,14 @@ class ItemModel {
     map['address'] = address;
     map['geoFirePoint'] = geoFirePoint.data;
     map['createdDate'] = createdDate;
+    return map;
+  }
+
+  Map<String, dynamic> toMinJson() {
+    var map = <String, dynamic>{};
+    map['imageDownloadUrls'] = imageDownloadUrls.sublist(0, 1);
+    map['title'] = title;
+    map['price'] = price;
     return map;
   }
 

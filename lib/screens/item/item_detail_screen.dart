@@ -188,7 +188,13 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                 thickness: 2,
                                 color: Colors.grey[200],
                               ),
-                              Row(
+                            ])),
+                          ),
+                          SliverToBoxAdapter(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: common_padding),
+                              child: Row(
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
@@ -215,20 +221,38 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                     ),
                                   )
                                 ],
-                              )
-                            ])),
-                          ),
-                          SliverPadding(
-                            padding: EdgeInsets.all(common_sm_padding),
-                            sliver: SliverGrid.count(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: common_sm_padding,
-                              crossAxisSpacing: common_sm_padding,
-                              childAspectRatio: 6 / 7,
-                              children:
-                                  List.generate(10, (index) => SimilarItem()),
+                              ),
                             ),
-                          )
+                          ),
+                          SliverToBoxAdapter(
+                            child: FutureBuilder<List<ItemModel>>(
+                              future: ItemService().getUserItems(
+                                  userModel.userKey,
+                                  itemKey: itemModel.itemKey),
+                              builder: (context, snapshot) {
+                                if (snapshot.hasData) {
+                                  return Padding(
+                                    padding: EdgeInsets.all(common_sm_padding),
+                                    child: GridView.count(
+                                      padding: EdgeInsets.symmetric(
+                                          horizontal: common_sm_padding),
+                                      physics: NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      crossAxisCount: 2,
+                                      mainAxisSpacing: common_sm_padding,
+                                      crossAxisSpacing: common_sm_padding,
+                                      childAspectRatio: 6 / 7,
+                                      children: List.generate(
+                                          snapshot.data!.length,
+                                          (index) => SimilarItem(
+                                              snapshot.data![index])),
+                                    ),
+                                  );
+                                }
+                                return Container();
+                              },
+                            ),
+                          ),
                         ],
                       ),
                     ),

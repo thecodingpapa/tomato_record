@@ -62,8 +62,8 @@ class _InputScreenState extends State<InputScreen> {
     List<String> downloadUrls =
         await ImageStorage.uploadImages(images, itemKey);
 
-    final num? price = num.tryParse(
-        _priceController.text.replaceAll('.', '').replaceAll('원', ''));
+    final num? price =
+        num.tryParse(_priceController.text.replaceAll(new RegExp(r"\D"), ''));
 
     ItemModel itemModel = ItemModel(
       itemKey: itemKey,
@@ -81,7 +81,8 @@ class _InputScreenState extends State<InputScreen> {
 
     logger.d('upload finished - ${downloadUrls.toString()}');
 
-    await ItemService().createNewItem(itemModel.toJson(), itemKey);
+    await ItemService()
+        .createNewItem(itemModel, itemKey, userNotifier.user!.uid);
     context.beamBack();
   }
 

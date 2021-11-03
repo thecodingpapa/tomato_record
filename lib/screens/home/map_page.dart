@@ -2,18 +2,21 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:latlng/latlng.dart';
 import 'package:map/map.dart';
+import 'package:tomato_record/data/user_model.dart';
+import 'package:tomato_record/states/user_notifier.dart';
+import 'package:provider/provider.dart';
 
 class MapPage extends StatefulWidget {
-  const MapPage({Key? key}) : super(key: key);
+  final UserModel _userModel;
+
+  const MapPage(this._userModel, {Key? key}) : super(key: key);
 
   @override
   _MapPageState createState() => _MapPageState();
 }
 
 class _MapPageState extends State<MapPage> {
-  final controller = MapController(
-    location: LatLng(35.68, 51.41),
-  );
+  late final controller;
 
   Offset? _dragStart;
   double _scaleData = 1.0;
@@ -34,6 +37,15 @@ class _MapPageState extends State<MapPage> {
     _dragStart = now;
     controller.drag(diff.dx, diff.dy);
     setState(() {});
+  }
+
+  @override
+  void initState() {
+    controller = MapController(
+      location: LatLng(widget._userModel.geoFirePoint.latitude,
+          widget._userModel.geoFirePoint.longitude),
+    );
+    super.initState();
   }
 
   @override

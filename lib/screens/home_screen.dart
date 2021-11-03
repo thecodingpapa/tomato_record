@@ -26,7 +26,9 @@ class _HomeScreenState extends State<HomeScreen> {
         index: _bottomSelectedIndex,
         children: [
           ItemsPage(),
-          MapPage(),
+          (context.read<UserNotifier>().userModel == null)
+              ? Container()
+              : MapPage(context.read<UserNotifier>().userModel!),
           Container(
             color: Colors.accents[6],
           ),

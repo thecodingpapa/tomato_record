@@ -16,12 +16,19 @@ class _MapPageState extends State<MapPage> {
   );
 
   Offset? _dragStart;
+  double _scaleData = 1.0;
   _scaleStart(ScaleStartDetails details) {
     _dragStart = details.focalPoint;
+    _scaleData = 1.0;
   }
 
   _scaleUpdate(ScaleUpdateDetails details) {
-    print('_scaleUpdate - ${details.focalPoint}');
+    print('_scaleUpdate - ${details.scale}');
+
+    var scaleDiff = details.scale - _scaleData;
+    _scaleData = details.scale;
+    controller.zoom += scaleDiff;
+
     final now = details.focalPoint;
     final diff = now - _dragStart!;
     _dragStart = now;

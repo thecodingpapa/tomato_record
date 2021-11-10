@@ -1,3 +1,6 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:geoflutterfire/geoflutterfire.dart';
+
 /// item_image : ""
 /// item_title : ""
 /// item_key : ""
@@ -15,75 +18,91 @@
 /// chatroom_key : ""
 
 class ChatroomModel {
-  String? itemImage;
-  String? itemTitle;
-  String? itemKey;
-  String? itemAddress;
-  String? itemPosition;
-  double? itemPrice;
-  String? sellerKey;
-  String? buyerKey;
-  String? sellerImage;
-  String? buyerImage;
-  String? geoFirePoint;
-  String? lastMsg;
-  String? lastMsgTime;
-  String? lastMsgUserKey;
-  String? chatroomKey;
+  late String itemImage;
+  late String itemTitle;
+  late String itemKey;
+  late String itemAddress;
+  late String itemPosition;
+  late num itemPrice;
+  late String sellerKey;
+  late String buyerKey;
+  late String sellerImage;
+  late String buyerImage;
+  late GeoFirePoint geoFirePoint;
+  late String lastMsg;
+  late DateTime lastMsgTime;
+  late String lastMsgUserKey;
+  late String chatroomKey;
+  DocumentReference? reference;
 
-  ChatroomModel({
-      this.itemImage, 
-      this.itemTitle, 
-      this.itemKey, 
-      this.itemAddress, 
-      this.itemPosition, 
-      this.itemPrice, 
-      this.sellerKey, 
-      this.buyerKey, 
-      this.sellerImage, 
-      this.buyerImage, 
-      this.geoFirePoint, 
-      this.lastMsg, 
-      this.lastMsgTime, 
-      this.lastMsgUserKey, 
-      this.chatroomKey});
+  ChatroomModel(
+      {required this.itemImage,
+      required this.itemTitle,
+      required this.itemKey,
+      required this.itemAddress,
+      required this.itemPosition,
+      required this.itemPrice,
+      required this.sellerKey,
+      required this.buyerKey,
+      required this.sellerImage,
+      required this.buyerImage,
+      required this.geoFirePoint,
+      required this.lastMsg,
+      required this.lastMsgTime,
+      required this.lastMsgUserKey,
+      required this.chatroomKey,
+      this.reference});
 
-  ChatroomModel.fromJson(dynamic json) {
-    itemImage = json['item_image'];
-    itemTitle = json['item_title'];
-    itemKey = json['item_key'];
-    itemAddress = json['item_address'];
-    itemPosition = json['item_position'];
-    itemPrice = json['item_price'];
-    sellerKey = json['seller_key'];
-    buyerKey = json['buyer_key'];
-    sellerImage = json['seller_image'];
-    buyerImage = json['buyer_image'];
-    geoFirePoint = json['geo_fire_point'];
-    lastMsg = json['last_msg'];
-    lastMsgTime = json['last_msg_time'];
+  ChatroomModel.fromJson(
+      Map<String, dynamic> json, this.chatroomKey, this.reference) {
+    itemImage = json['itemImage'] ?? "";
+    itemTitle = json['itemTitle'] ?? "";
+    itemKey = json['itemKey'] ?? "";
+    itemAddress = json['itemAddress'] ?? "";
+    itemPosition = json['itemPosition'] ?? "";
+    itemPrice = json['itemPrice'] ?? 0;
+    sellerKey = json['sellerKey'] ?? "";
+    buyerKey = json['buyerKey'] ?? "";
+    sellerImage = json['sellerImage'] ?? "";
+    buyerImage = json['buyerImage'] ?? "";
+    geoFirePoint = json['geoFirePoint'] == null
+        ? GeoFirePoint(0, 0)
+        : GeoFirePoint((json['geoFirePoint']['geopoint']).latitude,
+            (json['geoFirePoint']['geopoint']).longitude);
+    lastMsg = json['lastMsg'] ?? "";
+    lastMsgTime = json['lastMsgTime'] == null
+        ? DateTime.now().toUtc()
+        : (json['lastMsgTime'] as Timestamp).toDate();
     lastMsgUserKey = json['last_msg_user_key'];
-    chatroomKey = json['chatroom_key'];
   }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
-    map['item_image'] = itemImage;
-    map['item_title'] = itemTitle;
-    map['item_key'] = itemKey;
-    map['item_address'] = itemAddress;
-    map['item_position'] = itemPosition;
-    map['item_price'] = itemPrice;
-    map['seller_key'] = sellerKey;
-    map['buyer_key'] = buyerKey;
-    map['seller_image'] = sellerImage;
-    map['buyer_image'] = buyerImage;
-    map['geo_fire_point'] = geoFirePoint;
-    map['last_msg'] = lastMsg;
-    map['last_msg_time'] = lastMsgTime;
-    map['last_msg_user_key'] = lastMsgUserKey;
-    map['chatroom_key'] = chatroomKey;
+    map['itemImage'] = itemImage;
+    map['itemTitle'] = itemTitle;
+    map['itemKey'] = itemKey;
+    map['itemAddress'] = itemAddress;
+    map['itemPosition'] = itemPosition;
+    map['itemPrice'] = itemPrice;
+    map['sellerKey'] = sellerKey;
+    map['buyerKey'] = buyerKey;
+    map['sellerImage'] = sellerImage;
+    map['buyerImage'] = buyerImage;
+    map['geoFirePoint'] = geoFirePoint.data;
+    map['lastMsg'] = lastMsg;
+    map['lastMsgTime'] = lastMsgTime;
+    map['lastMsgUserKey'] = lastMsgUserKey;
     return map;
   }
 
+  ChatroomModel.fromQuerySnapshot(
+      QueryDocumentSnapshot<Map<String, dynamic>> snapshot)
+      : this.fromJson(snapshot.data(), snapshot.id, snapshot.reference);
+
+  ChatroomModel.fromSnapshot(DocumentSnapshot<Map<String, dynamic>> snapshot)
+      : this.fromJson(snapshot.data()!, snapshot.id, snapshot.reference);
+
+  static String generateChatRoomKey(String buyer, String itemKey) {
+    return '${itemKey}_$buyer';
+  }
 }

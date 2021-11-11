@@ -2,8 +2,10 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tomato_record/constants/common_size.dart';
+import 'package:tomato_record/data/chatroom_model.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/data/user_model.dart';
+import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/repo/item_service.dart';
 import 'package:tomato_record/screens/item/similar_item.dart';
 import 'package:tomato_record/states/category_notifier.dart';
@@ -33,6 +35,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     thickness: 2,
     color: Colors.grey[200],
   );
+
   @override
   void initState() {
     _scrollController.addListener(() {
@@ -58,6 +61,31 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _goToChatroom(ItemModel itemModel, UserModel myUserModel) async {
+    String chatroomKey = ChatroomModel.generateChatRoomKey(
+        myUserModel.userKey, itemModel.itemKey);
+    ChatroomModel _chatroomModel = ChatroomModel(
+        itemImage: itemModel.imageDownloadUrls[0],
+        itemTitle: itemModel.title,
+        itemKey: widget.itemKey,
+        itemAddress: itemModel.address,
+        itemPrice: itemModel.price,
+        sellerKey: itemModel.userKey,
+        buyerKey: myUserModel.userKey,
+        sellerImage:
+            "https://minimaltoolkit.com/images/randomdata/male/101.jpg",
+        buyerImage:
+            'https://minimaltoolkit.com/images/randomdata/female/41.jpg',
+        geoFirePoint: itemModel.geoFirePoint,
+        chatroomKey: chatroomKey);
+    await ChatService().createNewChatRoom(_chatroomModel);
+
+    ChatroomModel chatroomModel =
+        await ChatService().getChatroomDetail(chatroomKey);
+
+    print(chatroomModel.toJson().toString());
   }
 
   @override
@@ -119,7 +147,12 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                   child: Container(),
                                 ),
                                 TextButton(
-                                    onPressed: () {}, child: Text('채팅으로 거래하기'))
+                                    onPressed: () => _goToChatroom(
+                                        itemModel,
+                                        context
+                                            .read<UserNotifier>()
+                                            .userModel!),
+                                    child: Text('채팅으로 거래하기'))
                               ],
                             ),
                           ),

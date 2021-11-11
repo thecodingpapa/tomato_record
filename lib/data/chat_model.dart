@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:tomato_record/constants/data_keys.dart';
 
 /// user_key : ""
 /// msg : "  "
@@ -19,18 +20,18 @@ class ChatModel {
       this.reference});
 
   ChatModel.fromJson(Map<String, dynamic> json, this.chatKey, this.reference) {
-    userKey = json['userKey'] ?? "";
-    msg = json['msg'] ?? "";
-    createdDate = json['createdDate'] == null
+    userKey = json[DOC_USERKEY] ?? "";
+    msg = json[DOC_MSG] ?? "";
+    createdDate = json[DOC_CREATEDDATE] == null
         ? DateTime.now().toUtc()
         : (json['createdDate'] as Timestamp).toDate();
   }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
-    map['userKey'] = userKey;
-    map['msg'] = msg;
-    map['createdDate'] = createdDate;
+    map[DOC_USERKEY] = userKey;
+    map[DOC_MSG] = msg;
+    map[DOC_CREATEDDATE] = createdDate;
     return map;
   }
 

@@ -1,11 +1,11 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:geoflutterfire/geoflutterfire.dart';
+import 'package:tomato_record/constants/data_keys.dart';
 
 /// item_image : ""
 /// item_title : ""
 /// item_key : ""
 /// item_address : ""
-/// item_position : ""
 /// item_price : 123.123
 /// seller_key : "asdf"
 /// buyer_key : "asdf"
@@ -22,16 +22,15 @@ class ChatroomModel {
   late String itemTitle;
   late String itemKey;
   late String itemAddress;
-  late String itemPosition;
   late num itemPrice;
   late String sellerKey;
   late String buyerKey;
   late String sellerImage;
   late String buyerImage;
   late GeoFirePoint geoFirePoint;
-  late String lastMsg;
-  late DateTime lastMsgTime;
-  late String lastMsgUserKey;
+  String? lastMsg;
+  DateTime? lastMsgTime;
+  String? lastMsgUserKey;
   late String chatroomKey;
   DocumentReference? reference;
 
@@ -40,58 +39,52 @@ class ChatroomModel {
       required this.itemTitle,
       required this.itemKey,
       required this.itemAddress,
-      required this.itemPosition,
       required this.itemPrice,
       required this.sellerKey,
       required this.buyerKey,
       required this.sellerImage,
       required this.buyerImage,
       required this.geoFirePoint,
-      required this.lastMsg,
-      required this.lastMsgTime,
-      required this.lastMsgUserKey,
       required this.chatroomKey,
       this.reference});
 
   ChatroomModel.fromJson(
       Map<String, dynamic> json, this.chatroomKey, this.reference) {
-    itemImage = json['itemImage'] ?? "";
-    itemTitle = json['itemTitle'] ?? "";
-    itemKey = json['itemKey'] ?? "";
-    itemAddress = json['itemAddress'] ?? "";
-    itemPosition = json['itemPosition'] ?? "";
-    itemPrice = json['itemPrice'] ?? 0;
-    sellerKey = json['sellerKey'] ?? "";
-    buyerKey = json['buyerKey'] ?? "";
-    sellerImage = json['sellerImage'] ?? "";
-    buyerImage = json['buyerImage'] ?? "";
-    geoFirePoint = json['geoFirePoint'] == null
+    itemImage = json[DOC_ITEMIMAGE] ?? "";
+    itemTitle = json[DOC_ITEMTITLE] ?? "";
+    itemKey = json[DOC_ITEMKEY] ?? "";
+    itemAddress = json[DOC_ITEMADDRESS] ?? "";
+    itemPrice = json[DOC_ITEMPRICE] ?? 0;
+    sellerKey = json[DOC_SELLERKEY] ?? "";
+    buyerKey = json[DOC_BUYERKEY] ?? "";
+    sellerImage = json[DOC_SELLERIMAGE] ?? "";
+    buyerImage = json[DOC_BUYERIMAGE] ?? "";
+    geoFirePoint = json[DOC_GEOFIREPOINT] == null
         ? GeoFirePoint(0, 0)
-        : GeoFirePoint((json['geoFirePoint']['geopoint']).latitude,
-            (json['geoFirePoint']['geopoint']).longitude);
-    lastMsg = json['lastMsg'] ?? "";
-    lastMsgTime = json['lastMsgTime'] == null
+        : GeoFirePoint((json[DOC_GEOFIREPOINT][DOC_GEOPOINT]).latitude,
+            (json[DOC_GEOFIREPOINT][DOC_GEOPOINT]).longitude);
+    lastMsg = json[DOC_LASTMSG] ?? "";
+    lastMsgTime = json[DOC_LASTMSGTIME] == null
         ? DateTime.now().toUtc()
-        : (json['lastMsgTime'] as Timestamp).toDate();
-    lastMsgUserKey = json['last_msg_user_key'];
+        : (json[DOC_LASTMSGTIME] as Timestamp).toDate();
+    lastMsgUserKey = json[DOC_LASTMSGUSERKEY];
   }
 
   Map<String, dynamic> toJson() {
     var map = <String, dynamic>{};
-    map['itemImage'] = itemImage;
-    map['itemTitle'] = itemTitle;
-    map['itemKey'] = itemKey;
-    map['itemAddress'] = itemAddress;
-    map['itemPosition'] = itemPosition;
-    map['itemPrice'] = itemPrice;
-    map['sellerKey'] = sellerKey;
-    map['buyerKey'] = buyerKey;
-    map['sellerImage'] = sellerImage;
-    map['buyerImage'] = buyerImage;
-    map['geoFirePoint'] = geoFirePoint.data;
-    map['lastMsg'] = lastMsg;
-    map['lastMsgTime'] = lastMsgTime;
-    map['lastMsgUserKey'] = lastMsgUserKey;
+    map[DOC_ITEMIMAGE] = itemImage;
+    map[DOC_ITEMTITLE] = itemTitle;
+    map[DOC_ITEMKEY] = itemKey;
+    map[DOC_ITEMADDRESS] = itemAddress;
+    map[DOC_ITEMPRICE] = itemPrice;
+    map[DOC_SELLERKEY] = sellerKey;
+    map[DOC_BUYERKEY] = buyerKey;
+    map[DOC_SELLERIMAGE] = sellerImage;
+    map[DOC_BUYERIMAGE] = buyerImage;
+    map[DOC_GEOFIREPOINT] = geoFirePoint.data;
+    map[DOC_LASTMSG] = lastMsg;
+    map[DOC_LASTMSGTIME] = lastMsgTime;
+    map[DOC_LASTMSGUSERKEY] = lastMsgUserKey;
     return map;
   }
 

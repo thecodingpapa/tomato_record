@@ -7,11 +7,13 @@ import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/data/user_model.dart';
 import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/repo/item_service.dart';
+import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/item/similar_item.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/utils/time_calculation.dart';
+import 'package:beamer/beamer.dart';
 
 class ItemDetailScreen extends StatefulWidget {
   final String itemKey;
@@ -86,6 +88,7 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
         await ChatService().getChatroomDetail(chatroomKey);
 
     print(chatroomModel.toJson().toString());
+    context.beamToNamed('/$LOCATION_ITEM/${itemModel.itemKey}/$chatroomKey');
   }
 
   @override

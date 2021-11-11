@@ -29,8 +29,13 @@ class _HomeScreenState extends State<HomeScreen> {
           (context.read<UserNotifier>().userModel == null)
               ? Container()
               : MapPage(context.read<UserNotifier>().userModel!),
-          Container(
-            color: Colors.accents[6],
+          InkWell(
+            onTap: () {
+              context.beamToNamed('/$LOCATION_CHATROOM/1123123123123123');
+            },
+            child: Container(
+              color: Colors.accents[6],
+            ),
           ),
           Container(
             color: Colors.accents[9],

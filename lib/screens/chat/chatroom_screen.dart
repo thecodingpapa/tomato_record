@@ -15,13 +15,22 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Seller name'),
+        centerTitle: true,
         actions: [
           IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
         ],
       ),
       body: Column(
         children: [
-          Card(
+          Container(
+            decoration: BoxDecoration(boxShadow: [
+              BoxShadow(
+                  color: Colors.black45,
+                  offset: Offset.zero,
+                  blurRadius: 1.0,
+                  spreadRadius: 1.0)
+            ], color: Colors.white),
+            padding: EdgeInsets.symmetric(vertical: 8),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisSize: MainAxisSize.min,
@@ -68,7 +77,7 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 12),
+                  padding: const EdgeInsets.only(left: 16, bottom: 8),
                   child: SizedBox(
                     height: 36,
                     child: TextButton.icon(

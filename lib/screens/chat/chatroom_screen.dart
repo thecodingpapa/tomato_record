@@ -28,11 +28,17 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
             children: [
               _buildBanner(context),
               Expanded(
-                child: ListView.builder(
+                child: ListView.separated(
+                  padding: EdgeInsets.all(16),
                   itemBuilder: (context, index) {
                     return Chat(size: _size);
                   },
                   itemCount: 10,
+                  separatorBuilder: (BuildContext context, int index) {
+                    return SizedBox(
+                      height: 12,
+                    );
+                  },
                 ),
               )
             ],

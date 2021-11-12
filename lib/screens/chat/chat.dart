@@ -14,13 +14,15 @@ class Chat extends StatelessWidget {
         ExtendedImage.network(
           'https://randomuser.me/api/portraits/women/28.jpg',
           shape: BoxShape.circle,
-          width: size.width / 10,
-          height: size.width / 10,
+          width: size.width / 12,
+          height: size.width / 12,
         ),
         Expanded(
           child: Container(
             alignment: Alignment.topLeft,
             child: Container(
+              constraints: BoxConstraints(maxHeight: 50),
+              padding: EdgeInsets.all(8),
               decoration: BoxDecoration(
                   borderRadius: BorderRadius.only(
                     topLeft: Radius.zero,

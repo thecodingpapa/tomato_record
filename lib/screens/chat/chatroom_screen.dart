@@ -1,5 +1,6 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tomato_record/screens/chat/chat.dart';
 
 class ChatroomScreen extends StatefulWidget {
   final String chatroomKey;
@@ -12,21 +13,33 @@ class ChatroomScreen extends StatefulWidget {
 class _ChatroomScreenState extends State<ChatroomScreen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Seller name'),
-        centerTitle: true,
-        actions: [
-          IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
-        ],
-      ),
-      body: Column(
-        children: [
-          _buildBanner(context),
-          Container(child: Center(child: Text(widget.chatroomKey))),
-        ],
-      ),
-      bottomNavigationBar: _buildInputBar(),
+    return LayoutBuilder(
+      builder: (BuildContext context, BoxConstraints constraints) {
+        Size _size = MediaQuery.of(context).size;
+        return Scaffold(
+          appBar: AppBar(
+            title: Text('Seller name'),
+            centerTitle: true,
+            actions: [
+              IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
+            ],
+          ),
+          body: Column(
+            children: [
+              _buildBanner(context),
+              Expanded(
+                child: ListView.builder(
+                  itemBuilder: (context, index) {
+                    return Chat(size: _size);
+                  },
+                  itemCount: 10,
+                ),
+              )
+            ],
+          ),
+          bottomNavigationBar: _buildInputBar(),
+        );
+      },
     );
   }
 

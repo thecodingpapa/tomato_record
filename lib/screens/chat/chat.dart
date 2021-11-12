@@ -5,10 +5,16 @@ Radius chatBorder = Radius.circular(20);
 
 class Chat extends StatelessWidget {
   final Size size;
-  const Chat({Key? key, required this.size}) : super(key: key);
+  final bool isMe;
+  const Chat({Key? key, required this.size, this.isMe = true})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
+    return isMe ? _buildMyChat() : _buildOthersChat();
+  }
+
+  Row _buildOthersChat() {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -36,7 +42,7 @@ class Chat extends StatelessWidget {
                       bottomLeft: chatBorder,
                       bottomRight: chatBorder,
                     ),
-                    color: Colors.redAccent),
+                    color: Colors.grey[300]),
                 child: Text(
                     ';lkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgjlkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgj;ldslkjdjf'),
               ),
@@ -45,9 +51,42 @@ class Chat extends StatelessWidget {
                   '오전 10:25',
                   textScaleFactor: 0.6,
                 ),
-              )
+              ),
             ],
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMyChat() {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.end,
+      children: [
+        Expanded(
+          child: Align(
+            alignment: Alignment.bottomRight,
+            child: Text(
+              '오전 10:25',
+              textScaleFactor: 0.6,
+            ),
+          ),
+        ),
+        Container(
+          constraints:
+              BoxConstraints(minHeight: 40, maxWidth: size.width * 0.7),
+          padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topLeft: chatBorder,
+                topRight: Radius.zero,
+                bottomLeft: chatBorder,
+                bottomRight: chatBorder,
+              ),
+              color: Colors.red),
+          child: Text(
+              ';lkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgjlkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgj;ldslkjdjf',
+              style: TextStyle(color: Colors.white)),
         ),
       ],
     );

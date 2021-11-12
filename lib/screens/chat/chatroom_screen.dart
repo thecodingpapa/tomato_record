@@ -31,7 +31,8 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                 child: ListView.separated(
                   padding: EdgeInsets.all(16),
                   itemBuilder: (context, index) {
-                    return Chat(size: _size);
+                    bool isMe = index % 2 == 0;
+                    return Chat(size: _size, isMe: isMe);
                   },
                   itemCount: 10,
                   separatorBuilder: (BuildContext context, int index) {

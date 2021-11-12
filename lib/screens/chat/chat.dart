@@ -1,7 +1,7 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 
-Radius chatBorder = Radius.circular(25);
+Radius chatBorder = Radius.circular(20);
 
 class Chat extends StatelessWidget {
   final Size size;
@@ -10,6 +10,7 @@ class Chat extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         ExtendedImage.network(
           'https://randomuser.me/api/portraits/women/28.jpg',
@@ -17,22 +18,35 @@ class Chat extends StatelessWidget {
           width: size.width / 12,
           height: size.width / 12,
         ),
+        SizedBox(
+          width: 8,
+        ),
         Expanded(
-          child: Container(
-            alignment: Alignment.topLeft,
-            child: Container(
-              constraints: BoxConstraints(maxHeight: 50),
-              padding: EdgeInsets.all(8),
-              decoration: BoxDecoration(
-                  borderRadius: BorderRadius.only(
-                    topLeft: Radius.zero,
-                    topRight: chatBorder,
-                    bottomLeft: chatBorder,
-                    bottomRight: chatBorder,
-                  ),
-                  color: Colors.redAccent),
-              child: Text(';lkjasldkjf'),
-            ),
+          child: Row(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              Container(
+                constraints:
+                    BoxConstraints(minHeight: 40, maxWidth: size.width * 0.7),
+                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+                decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topLeft: Radius.zero,
+                      topRight: chatBorder,
+                      bottomLeft: chatBorder,
+                      bottomRight: chatBorder,
+                    ),
+                    color: Colors.redAccent),
+                child: Text(
+                    ';lkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgjlkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgj;ldslkjdjf'),
+              ),
+              Expanded(
+                child: Text(
+                  '오전 10:25',
+                  textScaleFactor: 0.6,
+                ),
+              )
+            ],
           ),
         ),
       ],

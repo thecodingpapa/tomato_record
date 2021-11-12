@@ -22,109 +22,112 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
       ),
       body: Column(
         children: [
-          Container(
-            decoration: BoxDecoration(boxShadow: [
-              BoxShadow(
-                  color: Colors.black45,
-                  offset: Offset.zero,
-                  blurRadius: 1.0,
-                  spreadRadius: 1.0)
-            ], color: Colors.white),
-            padding: EdgeInsets.symmetric(vertical: 8),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                ListTile(
-                  leading: ExtendedImage.network(
-                    'https://randomuser.me/api/portraits/women/11.jpg',
-                    fit: BoxFit.cover,
-                  ),
-                  title: RichText(
-                    text: TextSpan(
-                      text: '거래완료 ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(fontWeight: FontWeight.w700),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '이케아 소르테라 분리수거함 5개',
-                          style: Theme.of(context).textTheme.bodyText1,
-                        ),
-                      ],
-                    ),
-                  ),
-                  subtitle: RichText(
-                    text: TextSpan(
-                      text: '30,000원 ',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyText1!
-                          .copyWith(fontWeight: FontWeight.w700),
-                      children: <TextSpan>[
-                        TextSpan(
-                          text: '(가격제안불가)',
-                          style: Theme.of(context)
-                              .textTheme
-                              .bodyText1!
-                              .copyWith(
-                                  fontWeight: FontWeight.w100,
-                                  color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(left: 16, bottom: 8),
-                  child: SizedBox(
-                    height: 36,
-                    child: TextButton.icon(
-                      onPressed: () {},
-                      icon: Icon(
-                        Icons.edit,
-                        size: 18,
-                      ),
-                      label: Text('후기 남기기'),
-                      style: TextButton.styleFrom(
-                          primary: Colors.black,
-                          backgroundColor: Colors.white,
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(4),
-                              side: BorderSide(
-                                  color: Colors.grey[300]!, width: 1))),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
+          _buildBanner(context),
           Container(child: Center(child: Text(widget.chatroomKey))),
         ],
       ),
-      bottomNavigationBar: Container(
-        color: Colors.grey[300],
-        child: Row(
-          children: [
-            IconButton(onPressed: () {}, icon: Icon(Icons.add)),
-            Expanded(
-                child: TextFormField(
-              textAlignVertical: TextAlignVertical.bottom,
-              decoration: InputDecoration(
-                hintText: '메시지를 입력하세요.',
-                isDense: true,
-                contentPadding: EdgeInsets.all(10),
-                border: OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(20),
-                    borderSide: BorderSide(color: Colors.grey)),
-                fillColor: Colors.white,
-                filled: true,
+      bottomNavigationBar: _buildInputBar(),
+    );
+  }
+
+  Container _buildInputBar() {
+    return Container(
+      color: Colors.grey[300],
+      child: Row(
+        children: [
+          IconButton(onPressed: () {}, icon: Icon(Icons.add)),
+          Expanded(
+              child: TextFormField(
+            textAlignVertical: TextAlignVertical.bottom,
+            decoration: InputDecoration(
+              hintText: '메시지를 입력하세요.',
+              isDense: true,
+              contentPadding: EdgeInsets.all(10),
+              border: OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(20),
+                  borderSide: BorderSide(color: Colors.grey)),
+              fillColor: Colors.white,
+              filled: true,
+            ),
+          )),
+          IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+        ],
+      ),
+    );
+  }
+
+  Container _buildBanner(BuildContext context) {
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            color: Colors.black45,
+            offset: Offset.zero,
+            blurRadius: 1.0,
+            spreadRadius: 1.0)
+      ], color: Colors.white),
+      padding: EdgeInsets.symmetric(vertical: 8),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            leading: ExtendedImage.network(
+              'https://randomuser.me/api/portraits/women/11.jpg',
+              fit: BoxFit.cover,
+            ),
+            title: RichText(
+              text: TextSpan(
+                text: '거래완료 ',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontWeight: FontWeight.w700),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '이케아 소르테라 분리수거함 5개',
+                    style: Theme.of(context).textTheme.bodyText1,
+                  ),
+                ],
               ),
-            )),
-            IconButton(onPressed: () {}, icon: Icon(Icons.send)),
-          ],
-        ),
+            ),
+            subtitle: RichText(
+              text: TextSpan(
+                text: '30,000원 ',
+                style: Theme.of(context)
+                    .textTheme
+                    .bodyText1!
+                    .copyWith(fontWeight: FontWeight.w700),
+                children: <TextSpan>[
+                  TextSpan(
+                    text: '(가격제안불가)',
+                    style: Theme.of(context).textTheme.bodyText1!.copyWith(
+                        fontWeight: FontWeight.w100, color: Colors.grey),
+                  ),
+                ],
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 16, bottom: 8),
+            child: SizedBox(
+              height: 36,
+              child: TextButton.icon(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.edit,
+                  size: 18,
+                ),
+                label: Text('후기 남기기'),
+                style: TextButton.styleFrom(
+                    primary: Colors.black,
+                    backgroundColor: Colors.white,
+                    shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(4),
+                        side: BorderSide(color: Colors.grey[300]!, width: 1))),
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }

@@ -1,4 +1,5 @@
 import 'package:extended_image/extended_image.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/data/chat_model.dart';
 import 'package:tomato_record/repo/chat_service.dart';
@@ -17,6 +18,7 @@ class ChatroomScreen extends StatefulWidget {
 class _ChatroomScreenState extends State<ChatroomScreen> {
   @override
   Widget build(BuildContext context) {
+    User _user = context.read<UserNotifier>().user!;
     return LayoutBuilder(
       builder: (BuildContext context, BoxConstraints constraints) {
         Size _size = MediaQuery.of(context).size;
@@ -32,19 +34,29 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
             children: [
               _buildBanner(context),
               Expanded(
-                child: ListView.separated(
-                  padding: EdgeInsets.all(16),
-                  itemBuilder: (context, index) {
-                    bool isMe = index % 2 == 0;
-                    return Chat(size: _size, isMe: isMe);
-                  },
-                  itemCount: 10,
-                  separatorBuilder: (BuildContext context, int index) {
-                    return SizedBox(
-                      height: 12,
-                    );
-                  },
-                ),
+                child: StreamBuilder<List<ChatModel>>(
+                    stream: ChatService().connectToChat(widget.chatroomKey),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
+                        return ListView.separated(
+                          reverse: true,
+                          padding: EdgeInsets.all(16),
+                          itemBuilder: (context, index) {
+                            ChatModel chat = snapshot.data![index];
+                            return Chat(chat,
+                                size: _size, isMe: chat.userKey == _user.uid);
+                          },
+                          itemCount: snapshot.data!.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: 12,
+                            );
+                          },
+                        );
+                      } else {
+                        return Container(child: CircularProgressIndicator());
+                      }
+                    }),
               ),
               _buildInputBar(context)
             ],

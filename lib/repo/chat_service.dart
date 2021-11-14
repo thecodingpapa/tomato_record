@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:tomato_record/constants/data_keys.dart';
 import 'package:tomato_record/data/chat_model.dart';
@@ -35,6 +37,26 @@ class ChatService {
         await chatroomDocReference.get();
     ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(documentSnapshot);
     return chatroomModel;
+  }
+
+  Stream<List<ChatModel>> connectToChat(String chatroomKey) {
+    return FirebaseFirestore.instance
+        .collection(COL_CHATROOMS)
+        .doc(chatroomKey)
+        .collection(COL_CHATS)
+        .orderBy(DOC_CREATEDDATE, descending: true)
+        .limit(100)
+        .snapshots()
+        .transform(StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
+            List<ChatModel>>.fromHandlers(handleData: (snapshot, sink) async {
+      List<ChatModel> chats = [];
+
+      snapshot.docs.forEach((documentSnapshot) {
+        chats.add(ChatModel.fromSnapshot(documentSnapshot));
+      });
+
+      sink.add(chats);
+    }));
   }
 
   // Future<List<ChatroomModel>> getChatrooms() async {

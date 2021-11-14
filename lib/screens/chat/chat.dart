@@ -1,12 +1,14 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tomato_record/data/chat_model.dart';
 
 Radius chatBorder = Radius.circular(20);
 
 class Chat extends StatelessWidget {
   final Size size;
   final bool isMe;
-  const Chat({Key? key, required this.size, this.isMe = true})
+  final ChatModel chat;
+  const Chat(this.chat, {Key? key, required this.size, this.isMe = true})
       : super(key: key);
 
   @override
@@ -43,8 +45,7 @@ class Chat extends StatelessWidget {
                       bottomRight: chatBorder,
                     ),
                     color: Colors.grey[300]),
-                child: Text(
-                    ';lkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgjlkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgj;ldslkjdjf'),
+                child: Text(chat.msg),
               ),
               Expanded(
                 child: Text(
@@ -84,9 +85,7 @@ class Chat extends StatelessWidget {
                 bottomRight: chatBorder,
               ),
               color: Colors.red),
-          child: Text(
-              ';lkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgjlkdfadklkhdfasdfasfdlghiusdahfhkjldasfjklkajdsfkljdlksjgj;ldslkjdjf',
-              style: TextStyle(color: Colors.white)),
+          child: Text(chat.msg, style: TextStyle(color: Colors.white)),
         ),
       ],
     );

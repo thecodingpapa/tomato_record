@@ -91,10 +91,13 @@ class TomatoApp extends StatelessWidget {
                     primary: Colors.white,
                     minimumSize: Size(48, 48))),
             appBarTheme: AppBarTheme(
+                backwardsCompatibility: false,
                 backgroundColor: Colors.white,
                 foregroundColor: Colors.black87,
                 elevation: 2,
-                titleTextStyle: TextStyle(color: Colors.black87),
+                titleTextStyle: TextStyle(
+                  color: Colors.black87,
+                ),
                 actionsIconTheme: IconThemeData(color: Colors.black87)),
             bottomNavigationBarTheme: BottomNavigationBarThemeData(
                 selectedItemColor: Colors.black87,

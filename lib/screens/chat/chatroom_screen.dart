@@ -1,6 +1,10 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tomato_record/data/chat_model.dart';
+import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/screens/chat/chat.dart';
+import 'package:tomato_record/states/user_notifier.dart';
+import 'package:provider/provider.dart';
 
 class ChatroomScreen extends StatefulWidget {
   final String chatroomKey;
@@ -41,23 +45,27 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                     );
                   },
                 ),
-              )
+              ),
+              _buildInputBar(context)
             ],
           ),
-          bottomNavigationBar: _buildInputBar(),
         );
       },
     );
   }
 
-  Container _buildInputBar() {
+  TextEditingController _textEditingController = TextEditingController();
+
+  Container _buildInputBar(BuildContext context) {
     return Container(
+      height: 48,
       color: Colors.grey[300],
       child: Row(
         children: [
           IconButton(onPressed: () {}, icon: Icon(Icons.add)),
           Expanded(
               child: TextFormField(
+            controller: _textEditingController,
             textAlignVertical: TextAlignVertical.bottom,
             decoration: InputDecoration(
               hintText: '메시지를 입력하세요.',
@@ -70,7 +78,21 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
               filled: true,
             ),
           )),
-          IconButton(onPressed: () {}, icon: Icon(Icons.send)),
+          IconButton(
+              onPressed: () async {
+                String text = _textEditingController.text;
+                if (text.trim().isNotEmpty) {
+                  ChatModel chat = ChatModel(
+                    chatKey: '',
+                    userKey: context.read<UserNotifier>().user!.uid,
+                    msg: text,
+                    createdDate: DateTime.now().toUtc(),
+                  );
+                  await ChatService().createNewChat(widget.chatroomKey, chat);
+                  _textEditingController.clear();
+                }
+              },
+              icon: Icon(Icons.send)),
         ],
       ),
     );

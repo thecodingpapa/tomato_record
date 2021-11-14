@@ -67,7 +67,6 @@ class _HomeScreenState extends State<HomeScreen> {
         centerTitle: false,
         title: Text(
           '정왕동',
-          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         actions: [
           IconButton(

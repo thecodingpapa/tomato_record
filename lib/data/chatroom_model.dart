@@ -23,6 +23,7 @@ class ChatroomModel {
   late String itemKey;
   late String itemAddress;
   late num itemPrice;
+  late num numOfChats;
   late String sellerKey;
   late String buyerKey;
   late String sellerImage;
@@ -40,6 +41,7 @@ class ChatroomModel {
       required this.itemKey,
       required this.itemAddress,
       required this.itemPrice,
+      required this.numOfChats,
       required this.sellerKey,
       required this.buyerKey,
       required this.sellerImage,
@@ -55,6 +57,7 @@ class ChatroomModel {
     itemKey = json[DOC_ITEMKEY] ?? "";
     itemAddress = json[DOC_ITEMADDRESS] ?? "";
     itemPrice = json[DOC_ITEMPRICE] ?? 0;
+    numOfChats = json[DOC_NUMOFCHAT] ?? 0;
     sellerKey = json[DOC_SELLERKEY] ?? "";
     buyerKey = json[DOC_BUYERKEY] ?? "";
     sellerImage = json[DOC_SELLERIMAGE] ?? "";
@@ -77,6 +80,7 @@ class ChatroomModel {
     map[DOC_ITEMKEY] = itemKey;
     map[DOC_ITEMADDRESS] = itemAddress;
     map[DOC_ITEMPRICE] = itemPrice;
+    map[DOC_NUMOFCHAT] = numOfChats;
     map[DOC_SELLERKEY] = sellerKey;
     map[DOC_BUYERKEY] = buyerKey;
     map[DOC_SELLERIMAGE] = sellerImage;

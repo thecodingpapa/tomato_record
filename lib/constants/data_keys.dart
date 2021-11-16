@@ -10,6 +10,7 @@ const DOC_ITEMKEY = "itemKey";
 const DOC_ITEMADDRESS = "itemAddress";
 const DOC_ITEMPOSITION = "itemPosition";
 const DOC_ITEMPRICE = "itemPrice";
+const DOC_NUMOFCHAT = "numOfChat";
 const DOC_SELLERKEY = "sellerKey";
 const DOC_BUYERKEY = "buyerKey";
 const DOC_SELLERIMAGE = "sellerImage";

@@ -10,6 +10,13 @@ class ChatService {
   factory ChatService() => _chatService;
   ChatService._internal();
 
+  Future<bool> isChatroomExist(String chatroomKey) async {
+    DocumentReference<Map<String, dynamic>> chatroomDocReference =
+        FirebaseFirestore.instance.collection(COL_CHATROOMS).doc(chatroomKey);
+
+    return (await chatroomDocReference.get()).exists;
+  }
+
   Future createNewChatRoom(ChatroomModel chatroomModel) async {
     DocumentReference<Map<String, dynamic>> chatroomDocReference =
         FirebaseFirestore.instance.collection(COL_CHATROOMS).doc(
@@ -19,7 +26,11 @@ class ChatService {
     chatroomDocReference.set(chatroomModel.toJson());
   }
 
-  Future createNewChat(String chatroomKey, ChatModel chatModel) async {
+  Future createNewChat(
+      String chatroomKey, num numOfChats, ChatModel chatModel) async {
+    DocumentReference<Map<String, dynamic>> chatroomDocReference =
+        FirebaseFirestore.instance.collection(COL_CHATROOMS).doc(chatroomKey);
+
     DocumentReference<Map<String, dynamic>> chatDocReference = FirebaseFirestore
         .instance
         .collection(COL_CHATROOMS)
@@ -27,7 +38,15 @@ class ChatService {
         .collection(COL_CHATS)
         .doc();
 
-    chatDocReference.set(chatModel.toJson());
+    await FirebaseFirestore.instance.runTransaction((transaction) async {
+      transaction.set(chatDocReference, chatModel.toJson());
+      transaction.update(chatroomDocReference, {
+        DOC_NUMOFCHAT: numOfChats++,
+        DOC_LASTMSG: chatModel.msg,
+        DOC_LASTMSGUSERKEY: chatModel.userKey,
+        DOC_LASTMSGTIME: chatModel.createdDate
+      });
+    });
   }
 
   Future<ChatroomModel> getChatroomDetail(String chatroomKey) async {
@@ -37,6 +56,17 @@ class ChatService {
         await chatroomDocReference.get();
     ChatroomModel chatroomModel = ChatroomModel.fromSnapshot(documentSnapshot);
     return chatroomModel;
+  }
+
+  Stream<ChatroomModel?> connectToChatroom(String chatroomKey) {
+    return FirebaseFirestore.instance
+        .collection(COL_CHATROOMS)
+        .doc(chatroomKey)
+        .snapshots()
+        .transform(StreamTransformer<DocumentSnapshot<Map<String, dynamic>>,
+            ChatroomModel>.fromHandlers(handleData: (snapshot, sink) async {
+      sink.add(ChatroomModel.fromSnapshot(snapshot));
+    }));
   }
 
   Stream<List<ChatModel>> connectToChat(String chatroomKey) {
@@ -57,6 +87,73 @@ class ChatService {
 
       sink.add(chats);
     }));
+  }
+
+  Future<List<ChatModel>> getLatestChats(String chatroomKey) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+        .collection(COL_CHATROOMS)
+        .doc(chatroomKey)
+        .collection(COL_CHATS)
+        .orderBy(DOC_CREATEDDATE, descending: true)
+        .limit(100)
+        .get();
+
+    List<ChatModel> chats = [];
+
+    querySnapshot.docs.forEach((documentSnapshot) {
+      chats.add(ChatModel.fromSnapshot(documentSnapshot));
+    });
+
+    return chats;
+  }
+
+  Future<List<ChatModel>> getFrontChats(
+      DocumentReference currentLatest, String chatroomKey) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    final DocumentSnapshot currentLatestSnapshot = await currentLatest.get();
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+        .collection(COL_CHATROOMS)
+        .doc(chatroomKey)
+        .collection(COL_CHATS)
+        .orderBy(DOC_CREATEDDATE, descending: true)
+        .endAtDocument(currentLatestSnapshot)
+        .get();
+
+    List<ChatModel> chats = [];
+
+    querySnapshot.docs.forEach((documentSnapshot) {
+      chats.add(ChatModel.fromSnapshot(documentSnapshot));
+    });
+
+    return chats;
+  }
+
+  Future<List<ChatModel>> getNextChats(
+      DocumentReference currentLast, String chatroomKey) async {
+    final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+    final DocumentSnapshot currentLastSnapshot = await currentLast.get();
+
+    QuerySnapshot<Map<String, dynamic>> querySnapshot = await _firestore
+        .collection(COL_CHATROOMS)
+        .doc(chatroomKey)
+        .collection(COL_CHATS)
+        .orderBy(DOC_CREATEDDATE, descending: true)
+        .startAfterDocument(currentLastSnapshot)
+        .limit(100)
+        .get();
+
+    List<ChatModel> chats = [];
+
+    querySnapshot.docs.forEach((documentSnapshot) {
+      chats.add(ChatModel.fromSnapshot(documentSnapshot));
+    });
+
+    return chats;
   }
 
   // Future<List<ChatroomModel>> getChatrooms() async {

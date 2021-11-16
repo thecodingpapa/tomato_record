@@ -2,6 +2,7 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/data/chat_model.dart';
+import 'package:tomato_record/data/chatroom_model.dart';
 import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/screens/chat/chat.dart';
 import 'package:tomato_record/states/user_notifier.dart';
@@ -16,59 +17,79 @@ class ChatroomScreen extends StatefulWidget {
 }
 
 class _ChatroomScreenState extends State<ChatroomScreen> {
+  List<ChatModel> chats = [];
+  String latestMsg = "";
+
   @override
   Widget build(BuildContext context) {
     User _user = context.read<UserNotifier>().user!;
-    return LayoutBuilder(
-      builder: (BuildContext context, BoxConstraints constraints) {
-        Size _size = MediaQuery.of(context).size;
-        return Scaffold(
-          appBar: AppBar(
-            title: Text('Seller name'),
-            centerTitle: true,
-            actions: [
-              IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
-            ],
-          ),
-          body: Column(
-            children: [
-              _buildBanner(context),
-              Expanded(
-                child: StreamBuilder<List<ChatModel>>(
-                    stream: ChatService().connectToChat(widget.chatroomKey),
-                    builder: (context, snapshot) {
-                      if (snapshot.hasData && snapshot.data!.isNotEmpty) {
-                        return ListView.separated(
-                          reverse: true,
-                          padding: EdgeInsets.all(16),
-                          itemBuilder: (context, index) {
-                            ChatModel chat = snapshot.data![index];
-                            return Chat(chat,
-                                size: _size, isMe: chat.userKey == _user.uid);
-                          },
-                          itemCount: snapshot.data!.length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              height: 12,
-                            );
-                          },
-                        );
-                      } else {
-                        return Container(child: CircularProgressIndicator());
-                      }
-                    }),
-              ),
-              _buildInputBar(context)
-            ],
-          ),
-        );
-      },
+    return StreamProvider<ChatroomModel?>(
+      create: (context) => ChatService().connectToChatroom(widget.chatroomKey),
+      initialData: null,
+      child: Consumer<ChatroomModel?>(
+        builder: (context, chatroom, child) {
+          Size _size = MediaQuery.of(context).size;
+
+          if (chatroom != null) latestMsg = chatroom.lastMsg!;
+
+          if (chats.isEmpty) {
+            ChatService().getLatestChats(widget.chatroomKey).then((value) {
+              chats.addAll(value);
+              latestMsg = chats[0].msg;
+              setState(() {});
+            });
+          } else {
+            if (latestMsg != chats[0].msg) {
+              ChatService()
+                  .getFrontChats(chats[0].reference!, widget.chatroomKey)
+                  .then((value) {
+                chats.insertAll(0, value);
+                latestMsg = chats[0].msg;
+                setState(() {});
+              });
+            }
+          }
+
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Seller name'),
+              centerTitle: true,
+              actions: [
+                IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
+              ],
+            ),
+            body: Column(
+              children: [
+                _buildBanner(context),
+                Expanded(
+                  child: ListView.separated(
+                    reverse: true,
+                    padding: EdgeInsets.all(16),
+                    itemBuilder: (context, index) {
+                      ChatModel chat = chats[index];
+                      return Chat(chat,
+                          size: _size, isMe: chat.userKey == _user.uid);
+                    },
+                    itemCount: chats.length,
+                    separatorBuilder: (BuildContext context, int index) {
+                      return SizedBox(
+                        height: 12,
+                      );
+                    },
+                  ),
+                ),
+                _buildInputBar(context, chatroom)
+              ],
+            ),
+          );
+        },
+      ),
     );
   }
 
   TextEditingController _textEditingController = TextEditingController();
 
-  Container _buildInputBar(BuildContext context) {
+  Container _buildInputBar(BuildContext context, ChatroomModel? chatroomModel) {
     return Container(
       height: 48,
       color: Colors.grey[300],
@@ -100,7 +121,10 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                     msg: text,
                     createdDate: DateTime.now().toUtc(),
                   );
-                  await ChatService().createNewChat(widget.chatroomKey, chat);
+                  await ChatService().createNewChat(
+                      widget.chatroomKey,
+                      chatroomModel == null ? 0 : chatroomModel.numOfChats,
+                      chat);
                   _textEditingController.clear();
                 }
               },

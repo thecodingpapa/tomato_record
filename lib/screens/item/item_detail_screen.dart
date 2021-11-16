@@ -68,26 +68,26 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   void _goToChatroom(ItemModel itemModel, UserModel myUserModel) async {
     String chatroomKey = ChatroomModel.generateChatRoomKey(
         myUserModel.userKey, itemModel.itemKey);
-    ChatroomModel _chatroomModel = ChatroomModel(
-        itemImage: itemModel.imageDownloadUrls[0],
-        itemTitle: itemModel.title,
-        itemKey: widget.itemKey,
-        itemAddress: itemModel.address,
-        itemPrice: itemModel.price,
-        sellerKey: itemModel.userKey,
-        buyerKey: myUserModel.userKey,
-        sellerImage:
-            "https://minimaltoolkit.com/images/randomdata/male/101.jpg",
-        buyerImage:
-            'https://minimaltoolkit.com/images/randomdata/female/41.jpg',
-        geoFirePoint: itemModel.geoFirePoint,
-        chatroomKey: chatroomKey);
-    await ChatService().createNewChatRoom(_chatroomModel);
 
-    ChatroomModel chatroomModel =
-        await ChatService().getChatroomDetail(chatroomKey);
-
-    print(chatroomModel.toJson().toString());
+    bool exist = await ChatService().isChatroomExist(chatroomKey);
+    if (!exist) {
+      ChatroomModel _chatroomModel = ChatroomModel(
+          itemImage: itemModel.imageDownloadUrls[0],
+          itemTitle: itemModel.title,
+          itemKey: widget.itemKey,
+          numOfChats: 0,
+          itemAddress: itemModel.address,
+          itemPrice: itemModel.price,
+          sellerKey: itemModel.userKey,
+          buyerKey: myUserModel.userKey,
+          sellerImage:
+              "https://minimaltoolkit.com/images/randomdata/male/101.jpg",
+          buyerImage:
+              'https://minimaltoolkit.com/images/randomdata/female/41.jpg',
+          geoFirePoint: itemModel.geoFirePoint,
+          chatroomKey: chatroomKey);
+      await ChatService().createNewChatRoom(_chatroomModel);
+    }
     context.beamToNamed('/$LOCATION_ITEM/${itemModel.itemKey}/$chatroomKey');
   }
 

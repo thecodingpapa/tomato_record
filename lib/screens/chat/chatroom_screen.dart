@@ -2,7 +2,6 @@ import 'package:extended_image/extended_image.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/data/chat_model.dart';
-import 'package:tomato_record/data/chatroom_model.dart';
 import 'package:tomato_record/screens/chat/chat.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:provider/provider.dart';
@@ -52,42 +51,49 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                 children: [
                   _buildBanner(context),
                   Expanded(
-                    child: (chatsNotifier.chats.isEmpty)
-                        ? Center(child: CircularProgressIndicator())
-                        : Container(
-                            color: Colors.white,
-                            child: NotificationListener<ScrollEndNotification>(
-                              onNotification: (scrollEnd) {
-                                var metrics = scrollEnd.metrics;
-                                if (metrics.atEdge) {
-                                  if (metrics.pixels == 0)
-                                    print('At top');
-                                  else {
-                                    chatsNotifier.fetchMoreChats();
-                                  }
+                    child: Stack(
+                      children: [
+                        Container(
+                          color: Colors.white,
+                          child: NotificationListener<ScrollEndNotification>(
+                            onNotification: (scrollEnd) {
+                              var metrics = scrollEnd.metrics;
+                              if (metrics.atEdge) {
+                                if (metrics.pixels == 0)
+                                  print('At top');
+                                else {
+                                  chatsNotifier.fetchMoreChats();
                                 }
-                                return true;
+                              }
+                              return true;
+                            },
+                            child: ListView.separated(
+                              physics: ClampingScrollPhysics(),
+                              reverse: true,
+                              padding: EdgeInsets.all(16),
+                              itemBuilder: (context, index) {
+                                ChatModel chat = chatsNotifier.chats[index];
+                                return Chat(chat,
+                                    size: _size,
+                                    isMe: chat.userKey == _user.uid);
                               },
-                              child: ListView.separated(
-                                physics: ClampingScrollPhysics(),
-                                reverse: true,
-                                padding: EdgeInsets.all(16),
-                                itemBuilder: (context, index) {
-                                  ChatModel chat = chatsNotifier.chats[index];
-                                  return Chat(chat,
-                                      size: _size,
-                                      isMe: chat.userKey == _user.uid);
-                                },
-                                itemCount: chatsNotifier.chats.length,
-                                separatorBuilder:
-                                    (BuildContext context, int index) {
-                                  return SizedBox(
-                                    height: 12,
-                                  );
-                                },
-                              ),
+                              itemCount: chatsNotifier.chats.length,
+                              separatorBuilder:
+                                  (BuildContext context, int index) {
+                                return SizedBox(
+                                  height: 12,
+                                );
+                              },
                             ),
                           ),
+                        ),
+                        if (chatsNotifier.chats.isEmpty ||
+                            chatsNotifier.isProcessing)
+                          LinearProgressIndicator(
+                            minHeight: 3,
+                          )
+                      ],
+                    ),
                   ),
                   _buildInputBar(context)
                 ],

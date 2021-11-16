@@ -53,18 +53,22 @@ class ChatsNotifier extends ChangeNotifier {
   late ChatroomModel _chatroomModel;
   StreamSubscription? _chatroomUpdate;
   final String _chatroomKey;
+  bool _isProcessing = false;
 
   String latestMsg = "";
 
   ChatsNotifier(this._chatroomKey) {
     this._chatroomUpdate =
         ChatService().connectToChatroom(_chatroomKey).listen((chatroom) {
+      _isProcessing = true;
+      notifyListeners();
       this._chatroomModel = chatroom!;
 
       if (this._chats.isEmpty) {
         ChatService().getLatestChats(_chatroomKey).then((value) {
           this._chats.addAll(value);
           this.latestMsg = this._chats[0].msg;
+          _isProcessing = false;
           notifyListeners();
         });
       } else {
@@ -74,24 +78,33 @@ class ChatsNotifier extends ChangeNotifier {
               .then((value) {
             this._chats.insertAll(0, value);
             this.latestMsg = this._chats[0].msg;
+            _isProcessing = false;
             notifyListeners();
           });
+        } else {
+          _isProcessing = false;
+          notifyListeners();
         }
       }
     });
   }
 
   void fetchMoreChats() {
+    _isProcessing = true;
+    notifyListeners();
     ChatService()
         .getNextChats(this._chats.last.reference!, _chatroomKey)
         .then((value) {
       this._chats.addAll(value);
       latestMsg = this._chats[0].msg;
+      _isProcessing = false;
       notifyListeners();
     });
   }
 
   void addChat(ChatModel newChatModel) {
+    _isProcessing = true;
+    notifyListeners();
     //set on memory
     this._chats.insert(0, newChatModel);
     latestMsg = newChatModel.msg;
@@ -99,12 +112,15 @@ class ChatsNotifier extends ChangeNotifier {
     //upload to firestore
     ChatService().createNewChat(_chatroomKey, newChatModel);
 
+    _isProcessing = false;
     notifyListeners();
   }
 
   ChatroomModel get chatroom => _chatroomModel;
 
   List<ChatModel> get chats => _chats;
+
+  bool get isProcessing => _isProcessing;
 
   Future dispose() async {
     _chatroomUpdate!.cancel();

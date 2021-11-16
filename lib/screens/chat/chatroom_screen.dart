@@ -51,6 +51,7 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
           }
 
           return Scaffold(
+            backgroundColor: Colors.grey[300],
             appBar: AppBar(
               title: Text('Seller name'),
               centerTitle: true,
@@ -58,28 +59,60 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                 IconButton(onPressed: () {}, icon: Icon(Icons.call_outlined))
               ],
             ),
-            body: Column(
-              children: [
-                _buildBanner(context),
-                Expanded(
-                  child: ListView.separated(
-                    reverse: true,
-                    padding: EdgeInsets.all(16),
-                    itemBuilder: (context, index) {
-                      ChatModel chat = chats[index];
-                      return Chat(chat,
-                          size: _size, isMe: chat.userKey == _user.uid);
-                    },
-                    itemCount: chats.length,
-                    separatorBuilder: (BuildContext context, int index) {
-                      return SizedBox(
-                        height: 12,
-                      );
-                    },
+            body: SafeArea(
+              child: Stack(
+                children: [
+                  Expanded(
+                    child: Container(
+                      color: Colors.white,
+                      child: NotificationListener<ScrollEndNotification>(
+                        onNotification: (scrollEnd) {
+                          var metrics = scrollEnd.metrics;
+                          if (metrics.atEdge) {
+                            if (metrics.pixels == 0)
+                              print('At top');
+                            else {
+                              ChatService()
+                                  .getNextChats(
+                                      chats.last.reference!, widget.chatroomKey)
+                                  .then((value) {
+                                chats.addAll(value);
+                                latestMsg = chats[0].msg;
+                                setState(() {});
+                              });
+                            }
+                          }
+                          return true;
+                        },
+                        child: ListView.separated(
+                          physics: ClampingScrollPhysics(),
+                          reverse: true,
+                          padding: EdgeInsets.only(
+                              left: 16, right: 16, bottom: 64, top: 150),
+                          itemBuilder: (context, index) {
+                            ChatModel chat = chats[index];
+                            return Chat(chat,
+                                size: _size, isMe: chat.userKey == _user.uid);
+                          },
+                          itemCount: chats.length,
+                          separatorBuilder: (BuildContext context, int index) {
+                            return SizedBox(
+                              height: 12,
+                            );
+                          },
+                        ),
+                      ),
+                    ),
                   ),
-                ),
-                _buildInputBar(context, chatroom)
-              ],
+                  _buildBanner(context),
+                  Positioned(
+                      bottom: 0,
+                      height: 48,
+                      left: 0,
+                      right: 0,
+                      child: _buildInputBar(context, chatroom))
+                ],
+              ),
             ),
           );
         },

@@ -75,7 +75,7 @@ class ChatService {
         .doc(chatroomKey)
         .collection(COL_CHATS)
         .orderBy(DOC_CREATEDDATE, descending: true)
-        .limit(100)
+        .limit(10)
         .snapshots()
         .transform(StreamTransformer<QuerySnapshot<Map<String, dynamic>>,
             List<ChatModel>>.fromHandlers(handleData: (snapshot, sink) async {
@@ -97,7 +97,7 @@ class ChatService {
         .doc(chatroomKey)
         .collection(COL_CHATS)
         .orderBy(DOC_CREATEDDATE, descending: true)
-        .limit(100)
+        .limit(10)
         .get();
 
     List<ChatModel> chats = [];
@@ -144,7 +144,7 @@ class ChatService {
         .collection(COL_CHATS)
         .orderBy(DOC_CREATEDDATE, descending: true)
         .startAfterDocument(currentLastSnapshot)
-        .limit(100)
+        .limit(10)
         .get();
 
     List<ChatModel> chats = [];

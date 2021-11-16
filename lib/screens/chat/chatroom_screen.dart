@@ -3,7 +3,6 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/data/chat_model.dart';
 import 'package:tomato_record/data/chatroom_model.dart';
-import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/screens/chat/chat.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:provider/provider.dart';
@@ -17,38 +16,27 @@ class ChatroomScreen extends StatefulWidget {
 }
 
 class _ChatroomScreenState extends State<ChatroomScreen> {
-  List<ChatModel> chats = [];
-  String latestMsg = "";
+  late ChatsNotifier _chatsNotifier;
+
+  @override
+  void initState() {
+    _chatsNotifier = ChatsNotifier(widget.chatroomKey);
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     User _user = context.read<UserNotifier>().user!;
-    return StreamProvider<ChatroomModel?>(
-      create: (context) => ChatService().connectToChatroom(widget.chatroomKey),
-      initialData: null,
-      child: Consumer<ChatroomModel?>(
-        builder: (context, chatroom, child) {
+    return ChangeNotifierProvider<ChatsNotifier>.value(
+      value: _chatsNotifier,
+      child: Consumer<ChatsNotifier>(
+        builder: (context, chatsNotifier, child) {
           Size _size = MediaQuery.of(context).size;
-
-          if (chatroom != null) latestMsg = chatroom.lastMsg!;
-
-          if (chats.isEmpty) {
-            ChatService().getLatestChats(widget.chatroomKey).then((value) {
-              chats.addAll(value);
-              latestMsg = chats[0].msg;
-              setState(() {});
-            });
-          } else {
-            if (latestMsg != chats[0].msg) {
-              ChatService()
-                  .getFrontChats(chats[0].reference!, widget.chatroomKey)
-                  .then((value) {
-                chats.insertAll(0, value);
-                latestMsg = chats[0].msg;
-                setState(() {});
-              });
-            }
-          }
 
           return Scaffold(
             backgroundColor: Colors.grey[300],
@@ -60,57 +48,48 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
               ],
             ),
             body: SafeArea(
-              child: Stack(
+              child: Column(
                 children: [
-                  Expanded(
-                    child: Container(
-                      color: Colors.white,
-                      child: NotificationListener<ScrollEndNotification>(
-                        onNotification: (scrollEnd) {
-                          var metrics = scrollEnd.metrics;
-                          if (metrics.atEdge) {
-                            if (metrics.pixels == 0)
-                              print('At top');
-                            else {
-                              ChatService()
-                                  .getNextChats(
-                                      chats.last.reference!, widget.chatroomKey)
-                                  .then((value) {
-                                chats.addAll(value);
-                                latestMsg = chats[0].msg;
-                                setState(() {});
-                              });
-                            }
-                          }
-                          return true;
-                        },
-                        child: ListView.separated(
-                          physics: ClampingScrollPhysics(),
-                          reverse: true,
-                          padding: EdgeInsets.only(
-                              left: 16, right: 16, bottom: 64, top: 150),
-                          itemBuilder: (context, index) {
-                            ChatModel chat = chats[index];
-                            return Chat(chat,
-                                size: _size, isMe: chat.userKey == _user.uid);
-                          },
-                          itemCount: chats.length,
-                          separatorBuilder: (BuildContext context, int index) {
-                            return SizedBox(
-                              height: 12,
-                            );
-                          },
-                        ),
-                      ),
-                    ),
-                  ),
                   _buildBanner(context),
-                  Positioned(
-                      bottom: 0,
-                      height: 48,
-                      left: 0,
-                      right: 0,
-                      child: _buildInputBar(context, chatroom))
+                  Expanded(
+                    child: (chatsNotifier.chats.isEmpty)
+                        ? Center(child: CircularProgressIndicator())
+                        : Container(
+                            color: Colors.white,
+                            child: NotificationListener<ScrollEndNotification>(
+                              onNotification: (scrollEnd) {
+                                var metrics = scrollEnd.metrics;
+                                if (metrics.atEdge) {
+                                  if (metrics.pixels == 0)
+                                    print('At top');
+                                  else {
+                                    chatsNotifier.fetchMoreChats();
+                                  }
+                                }
+                                return true;
+                              },
+                              child: ListView.separated(
+                                physics: ClampingScrollPhysics(),
+                                reverse: true,
+                                padding: EdgeInsets.all(16),
+                                itemBuilder: (context, index) {
+                                  ChatModel chat = chatsNotifier.chats[index];
+                                  return Chat(chat,
+                                      size: _size,
+                                      isMe: chat.userKey == _user.uid);
+                                },
+                                itemCount: chatsNotifier.chats.length,
+                                separatorBuilder:
+                                    (BuildContext context, int index) {
+                                  return SizedBox(
+                                    height: 12,
+                                  );
+                                },
+                              ),
+                            ),
+                          ),
+                  ),
+                  _buildInputBar(context)
                 ],
               ),
             ),
@@ -122,7 +101,7 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
 
   TextEditingController _textEditingController = TextEditingController();
 
-  Container _buildInputBar(BuildContext context, ChatroomModel? chatroomModel) {
+  Container _buildInputBar(BuildContext context) {
     return Container(
       height: 48,
       color: Colors.grey[300],
@@ -154,11 +133,9 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
                     msg: text,
                     createdDate: DateTime.now().toUtc(),
                   );
-                  await ChatService().createNewChat(
-                      widget.chatroomKey,
-                      chatroomModel == null ? 0 : chatroomModel.numOfChats,
-                      chat);
+
                   _textEditingController.clear();
+                  _chatsNotifier.addChat(chat);
                 }
               },
               icon: Icon(Icons.send)),
@@ -167,21 +144,17 @@ class _ChatroomScreenState extends State<ChatroomScreen> {
     );
   }
 
-  Container _buildBanner(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            color: Colors.black45,
-            offset: Offset.zero,
-            blurRadius: 1.0,
-            spreadRadius: 1.0)
-      ], color: Colors.white),
-      padding: EdgeInsets.symmetric(vertical: 8),
-      child: Column(
+  Widget _buildBanner(BuildContext context) {
+    return MaterialBanner(
+      leadingPadding: EdgeInsets.zero,
+      padding: EdgeInsets.zero,
+      actions: [Container()],
+      content: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
           ListTile(
+            contentPadding: EdgeInsets.only(right: 0, left: 16),
             leading: ExtendedImage.network(
               'https://randomuser.me/api/portraits/women/11.jpg',
               fit: BoxFit.cover,

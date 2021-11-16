@@ -26,8 +26,7 @@ class ChatService {
     chatroomDocReference.set(chatroomModel.toJson());
   }
 
-  Future createNewChat(
-      String chatroomKey, num numOfChats, ChatModel chatModel) async {
+  Future createNewChat(String chatroomKey, ChatModel chatModel) async {
     DocumentReference<Map<String, dynamic>> chatroomDocReference =
         FirebaseFirestore.instance.collection(COL_CHATROOMS).doc(chatroomKey);
 
@@ -41,7 +40,6 @@ class ChatService {
     await FirebaseFirestore.instance.runTransaction((transaction) async {
       transaction.set(chatDocReference, chatModel.toJson());
       transaction.update(chatroomDocReference, {
-        DOC_NUMOFCHAT: numOfChats++,
         DOC_LASTMSG: chatModel.msg,
         DOC_LASTMSGUSERKEY: chatModel.userKey,
         DOC_LASTMSGTIME: chatModel.createdDate

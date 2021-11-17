@@ -154,9 +154,30 @@ class ChatService {
     return chats;
   }
 
-  // Future<List<ChatroomModel>> getChatrooms() async {
-  //   FirebaseFirestore.instance.collection(COL_CHATROOMS).orderBy(field)
-  // }
+  Future<List<ChatroomModel>> getChatrooms(String myUserKey) async {
+    List<ChatroomModel> chatrooms = [];
+    QuerySnapshot<Map<String, dynamic>> buying = await FirebaseFirestore
+        .instance
+        .collection(COL_CHATROOMS)
+        .where(DOC_BUYERKEY, isEqualTo: myUserKey)
+        .get();
+    QuerySnapshot<Map<String, dynamic>> selling = await FirebaseFirestore
+        .instance
+        .collection(COL_CHATROOMS)
+        .where(DOC_SELLERKEY, isEqualTo: myUserKey)
+        .get();
+
+    buying.docs.forEach((documentSnapshot) {
+      chatrooms.add(ChatroomModel.fromQuerySnapshot(documentSnapshot));
+    });
+    selling.docs.forEach((documentSnapshot) {
+      chatrooms.add(ChatroomModel.fromQuerySnapshot(documentSnapshot));
+    });
+
+    chatrooms.sort((a, b) => (a.lastMsgTime ?? DateTime.now())
+        .compareTo(b.lastMsgTime ?? DateTime.now()));
+    return chatrooms;
+  }
   //
   // Future<List<ChatModel>> getLatestChat() async {
   //

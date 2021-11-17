@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
+import 'package:tomato_record/screens/chat/chat_list_page.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
 import 'package:tomato_record/screens/home/map_page.dart';
 import 'package:tomato_record/states/user_notifier.dart';
@@ -19,6 +20,27 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _bottomSelectedIndex = 0;
 
+  String _appbarTitle() {
+    switch (_bottomSelectedIndex) {
+      case 0:
+        {
+          return '정왕동';
+        }
+      case 1:
+        {
+          return '지도';
+        }
+      case 2:
+        {
+          return '채팅';
+        }
+      default:
+        {
+          return '정왕동';
+        }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -29,14 +51,7 @@ class _HomeScreenState extends State<HomeScreen> {
           (context.read<UserNotifier>().userModel == null)
               ? Container()
               : MapPage(context.read<UserNotifier>().userModel!),
-          InkWell(
-            onTap: () {
-              context.beamToNamed('/$LOCATION_CHATROOM/1123123123123123');
-            },
-            child: Container(
-              color: Colors.accents[6],
-            ),
-          ),
+          ChatListPage(),
           Container(
             color: Colors.accents[9],
           )
@@ -66,7 +81,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: Text(
-          '정왕동',
+          _appbarTitle(),
+          style: Theme.of(context).textTheme.headline6,
         ),
         actions: [
           IconButton(

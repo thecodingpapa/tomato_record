@@ -101,6 +101,7 @@ class _ExpandableFabState extends State<ExpandableFab>
       duration: ExpandableFab.duration,
       curve: Curves.easeOut,
       child: FloatingActionButton(
+        heroTag: 'btn1',
         onPressed: _toggle,
         mini: true,
         backgroundColor: Colors.white,
@@ -124,6 +125,7 @@ class _ExpandableFabState extends State<ExpandableFab>
           opacity: _open ? 0.0 : 1.0,
           duration: ExpandableFab.duration,
           child: FloatingActionButton(
+            heroTag: 'btn2',
             onPressed: _toggle,
             child: const Icon(Icons.close),
           ),

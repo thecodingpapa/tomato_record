@@ -53,7 +53,7 @@ class _ChatListPageState extends State<ChatListPage> {
                     shape: BoxShape.circle,
                   ),
                   trailing: ExtendedImage.network(
-                    chatroomModel.itemImage ?? 'https://picsum.photos/50',
+                    chatroomModel.itemImage,
                     fit: BoxFit.cover,
                     shape: BoxShape.rectangle,
                     borderRadius: BorderRadius.circular(4),

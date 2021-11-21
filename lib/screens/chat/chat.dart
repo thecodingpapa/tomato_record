@@ -1,20 +1,26 @@
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
+import 'package:tomato_record/data/chat_model.dart';
 
 const roundedCorner = Radius.circular(20);
 
 class Chat extends StatelessWidget {
   final Size size;
   final bool isMine;
-  const Chat({Key? key, required this.size, required this.isMine})
+  final ChatModel chatModel;
+  const Chat(
+      {Key? key,
+      required this.size,
+      required this.isMine,
+      required this.chatModel})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return isMine ? _buildMyMsg() : _buildOthersMsg();
+    return isMine ? _buildMyMsg(context) : _buildOthersMsg(context);
   }
 
-  Row _buildOthersMsg() {
+  Row _buildOthersMsg(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -35,8 +41,8 @@ class Chat extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
             Container(
-              child: Text(
-                  'l;kjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjoi'),
+              child: Text(chatModel.msg,
+                  style: Theme.of(context).textTheme.bodyText1!),
               padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
               constraints:
                   BoxConstraints(minHeight: 40, maxWidth: size.width * 0.5),
@@ -58,7 +64,7 @@ class Chat extends StatelessWidget {
     );
   }
 
-  Row _buildMyMsg() {
+  Row _buildMyMsg(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
       mainAxisAlignment: MainAxisAlignment.end,
@@ -69,7 +75,12 @@ class Chat extends StatelessWidget {
         ),
         Container(
           child: Text(
-              'l;kjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjokjaklfjd;lajsdkfa;kdfjoi'),
+            chatModel.msg,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Colors.white),
+          ),
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
           constraints:
               BoxConstraints(minHeight: 40, maxWidth: size.width * 0.6),

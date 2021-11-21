@@ -8,23 +8,24 @@ import 'package:tomato_record/constants/data_keys.dart';
 /// reference : ""
 
 class ChatModel {
-  late String chatKey;
+  String? chatKey;
   late String msg;
-  late String createdDate;
+  late DateTime createdDate;
   late String userKey;
   DocumentReference? reference;
 
   ChatModel(
-      {required this.chatKey,
-      required this.msg,
+      {required this.msg,
       required this.createdDate,
       required this.userKey,
       this.reference});
 
   ChatModel.fromJson(Map<String, dynamic> json, this.chatKey, this.reference) {
-    msg = json[DOC_MSG];
-    createdDate = json[DOC_CREATEDDATE];
-    userKey = json[DOC_USERKEY];
+    msg = json[DOC_MSG] ?? "";
+    createdDate = json[DOC_CREATEDDATE] == null
+        ? DateTime.now().toUtc()
+        : (json[DOC_CREATEDDATE] as Timestamp).toDate();
+    userKey = json[DOC_USERKEY] ?? "";
   }
 
   Map<String, dynamic> toJson() {

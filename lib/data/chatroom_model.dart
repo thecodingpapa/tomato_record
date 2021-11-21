@@ -45,9 +45,9 @@ class ChatroomModel {
       required this.sellerImage,
       required this.buyerImage,
       required this.geoFirePoint,
-      required this.lastMsg,
+      this.lastMsg = "",
       required this.lastMsgTime,
-      required this.lastMsgUserKey,
+      this.lastMsgUserKey = "",
       required this.chatroomKey,
       this.reference});
   ChatroomModel.fromJson(

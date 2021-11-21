@@ -1,10 +1,14 @@
+import 'package:beamer/src/beamer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:smooth_page_indicator/smooth_page_indicator.dart';
 import 'package:tomato_record/constants/common_size.dart';
+import 'package:tomato_record/data/chatroom_model.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/data/user_model.dart';
+import 'package:tomato_record/repo/chat_service.dart';
 import 'package:tomato_record/repo/item_service.dart';
+import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/item/similar_item.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/user_notifier.dart';
@@ -58,6 +62,31 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
   void dispose() {
     _pageController.dispose();
     super.dispose();
+  }
+
+  void _goToChatroom(ItemModel itemModel, UserModel userModel) async {
+    String chatroomKey =
+        ChatroomModel.generateChatRoomKey(userModel.userKey, widget.itemKey);
+
+    ChatroomModel _chatroomModel = ChatroomModel(
+        lastMsgTime: DateTime.now(),
+        itemImage: itemModel.imageDownloadUrls[0],
+        itemTitle: itemModel.title,
+        itemKey: widget.itemKey,
+        itemAddress: itemModel.address,
+        itemPrice: itemModel.price,
+        sellerKey: itemModel.userKey,
+        buyerKey: userModel.userKey,
+        sellerImage:
+            "https://minimaltoolkit.com/images/randomdata/male/101.jpg",
+        buyerImage:
+            'https://minimaltoolkit.com/images/randomdata/female/41.jpg',
+        geoFirePoint: itemModel.geoFirePoint,
+        chatroomKey: chatroomKey);
+
+    await ChatService().createNewChatroom(_chatroomModel);
+
+    context.beamToNamed('/$LOCATION_ITEM/${widget.itemKey}/$chatroomKey');
   }
 
   @override
@@ -119,7 +148,10 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
                                   child: Container(),
                                 ),
                                 TextButton(
-                                    onPressed: () {}, child: Text('채팅으로 거래하기'))
+                                    onPressed: () {
+                                      _goToChatroom(itemModel, userModel);
+                                    },
+                                    child: Text('채팅으로 거래하기'))
                               ],
                             ),
                           ),

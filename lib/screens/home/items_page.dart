@@ -9,7 +9,8 @@ import 'package:beamer/beamer.dart';
 import 'package:tomato_record/router/locations.dart';
 
 class ItemsPage extends StatefulWidget {
-  const ItemsPage({Key? key}) : super(key: key);
+  final String userKey;
+  const ItemsPage({Key? key, required this.userKey}) : super(key: key);
 
   @override
   State<ItemsPage> createState() => _ItemsPageState();
@@ -46,7 +47,7 @@ class _ItemsPageState extends State<ItemsPage> {
 
   Future _onRefresh() async {
     items.clear();
-    items.addAll(await ItemService().getItems());
+    items.addAll(await ItemService().getItems(widget.userKey));
     setState(() {});
   }
 

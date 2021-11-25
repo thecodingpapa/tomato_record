@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tomato_record/data/user_model.dart';
 import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/chat/chat_list_page.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
@@ -22,23 +23,21 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    UserModel? userModel = context.read<UserNotifier>().userModel;
     return Scaffold(
-      body: IndexedStack(
-        index: _bottomSelectedIndex,
-        children: [
-          ItemsPage(),
-          (context.read<UserNotifier>().userModel == null)
-              ? Container()
-              : MapPage(context.read<UserNotifier>().userModel!),
-          (context.read<UserNotifier>().userModel == null)
-              ? Container()
-              : ChatListPage(
-                  userKey: context.read<UserNotifier>().userModel!.userKey),
-          Container(
-            color: Colors.accents[9],
-          )
-        ],
-      ),
+      body: (userModel == null)
+          ? Container()
+          : IndexedStack(
+              index: _bottomSelectedIndex,
+              children: [
+                ItemsPage(userKey: userModel.userKey),
+                MapPage(userModel),
+                ChatListPage(userKey: userModel.userKey),
+                Container(
+                  color: Colors.accents[9],
+                )
+              ],
+            ),
       floatingActionButton: ExpandableFab(
         distance: 90,
         children: [

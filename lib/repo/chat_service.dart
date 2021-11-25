@@ -142,6 +142,8 @@ class ChatService {
       chatrooms.add(ChatroomModel.fromQuerySnapshot(documentSnapshot));
     });
 
+    print('chatroom list - ${chatrooms.length}');
+
     chatrooms.sort((a, b) => (a.lastMsgTime).compareTo(b.lastMsgTime));
 
     return chatrooms;

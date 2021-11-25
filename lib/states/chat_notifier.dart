@@ -4,9 +4,9 @@ import 'package:tomato_record/data/chatroom_model.dart';
 import 'package:tomato_record/repo/chat_service.dart';
 
 class ChatNotifier extends ChangeNotifier {
-  late ChatroomModel _chatroomModel;
+  ChatroomModel? _chatroomModel;
   List<ChatModel> _chatList = [];
-  late String _chatroomKey;
+  final String _chatroomKey;
 
   ChatNotifier(this._chatroomKey) {
     ChatService().connectChatroom(_chatroomKey).listen((chatroomModel) {
@@ -38,7 +38,7 @@ class ChatNotifier extends ChangeNotifier {
 
   List<ChatModel> get chatList => _chatList;
 
-  ChatroomModel get chatroomModel => _chatroomModel;
+  ChatroomModel? get chatroomModel => _chatroomModel;
 
   String get chatroomKey => _chatroomKey;
 }

@@ -69,7 +69,7 @@ class ChatroomModel {
     lastMsgTime = json[DOC_LASTMSGTIME] == null
         ? DateTime.now().toUtc()
         : (json[DOC_LASTMSGTIME] as Timestamp).toDate();
-    lastMsgUserKey = json[DOC_LASTMSGUSERKEY];
+    lastMsgUserKey = json[DOC_LASTMSGUSERKEY] ?? "";
   }
 
   Map<String, dynamic> toJson() {

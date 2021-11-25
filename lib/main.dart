@@ -25,7 +25,6 @@ final _routerDelegate = BeamerDelegate(
         beamLocations: [HomeLocation(), InputLocation(), ItemLocation()]));
 
 void main() {
-  logger.d('My first log by logger!!');
   Provider.debugCheckInvalidValueType = null;
   WidgetsFlutterBinding.ensureInitialized();
   runApp(MyApp());

@@ -4,6 +4,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:tomato_record/router/locations.dart';
+import 'package:tomato_record/screens/chat/chat_list_page.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
 import 'package:tomato_record/screens/home/map_page.dart';
 import 'package:tomato_record/states/user_notifier.dart';
@@ -29,9 +30,10 @@ class _HomeScreenState extends State<HomeScreen> {
           (context.read<UserNotifier>().userModel == null)
               ? Container()
               : MapPage(context.read<UserNotifier>().userModel!),
-          Container(
-            color: Colors.accents[6],
-          ),
+          (context.read<UserNotifier>().userModel == null)
+              ? Container()
+              : ChatListPage(
+                  userKey: context.read<UserNotifier>().userModel!.userKey),
           Container(
             color: Colors.accents[9],
           )

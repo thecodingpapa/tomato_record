@@ -23,7 +23,7 @@ class _ItemsPageState extends State<ItemsPage> {
   void initState() {
     if (!init) {
       _onRefresh();
-      init = !init;
+      init = true;
     }
     super.initState();
   }

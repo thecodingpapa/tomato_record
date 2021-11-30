@@ -7,12 +7,14 @@ import 'package:tomato_record/screens/home_screen.dart';
 import 'package:tomato_record/screens/input/category_input_screen.dart';
 import 'package:tomato_record/screens/input/input_screen.dart';
 import 'package:tomato_record/screens/item/item_detail_screen.dart';
+import 'package:tomato_record/screens/search/search_screen.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/select_image_notifier.dart';
 
 const LOCATION_HOME = 'home';
 const LOCATION_INPUT = 'input';
 const LOCATION_ITEM = 'item';
+const LOCATION_SEARCH = 'search';
 const LOCATION_ITEM_ID = 'item_id';
 const LOCATION_CHATROOM_ID = 'chatroom_id';
 const LOCATION_CATEGORY_INPUT = 'category_input';
@@ -20,11 +22,15 @@ const LOCATION_CATEGORY_INPUT = 'category_input';
 class HomeLocation extends BeamLocation {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    return [BeamPage(child: HomeScreen(), key: ValueKey(LOCATION_HOME))];
+    return [
+      BeamPage(child: HomeScreen(), key: ValueKey(LOCATION_HOME)),
+      if (state.pathBlueprintSegments.contains(LOCATION_SEARCH))
+        BeamPage(key: ValueKey(LOCATION_SEARCH), child: SearchScreen()),
+    ];
   }
 
   @override
-  List get pathBlueprints => ['/'];
+  List get pathBlueprints => ['/', '/$LOCATION_SEARCH'];
 }
 
 class InputLocation extends BeamLocation {

@@ -18,11 +18,11 @@ class ChatNotifier extends ChangeNotifier {
           notifyListeners();
         });
       } else {
-        if (_chatList[0].reference == null) _chatList.removeAt(0);
+        if (this._chatList[0].reference == null) this._chatList.removeAt(0);
         ChatService()
-            .getLatestChats(_chatroomKey, _chatList[0].reference!)
+            .getLatestChats(_chatroomKey, this._chatList[0].reference!)
             .then((latestChats) {
-          _chatList.insertAll(0, latestChats);
+          this._chatList.insertAll(0, latestChats);
           notifyListeners();
         });
       }

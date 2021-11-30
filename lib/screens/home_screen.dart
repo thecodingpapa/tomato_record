@@ -72,7 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.beamToNamed("/");
               },
               icon: Icon(CupertinoIcons.nosign)),
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.search)),
+          IconButton(
+              onPressed: () {
+                context.beamToNamed('/$LOCATION_SEARCH');
+              },
+              icon: Icon(CupertinoIcons.search)),
           IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.text_justify)),
         ],
       ),

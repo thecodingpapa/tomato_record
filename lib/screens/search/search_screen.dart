@@ -12,6 +12,8 @@ class _SearchScreenState extends State<SearchScreen> {
       borderRadius: BorderRadius.circular(8),
       borderSide: BorderSide(color: Colors.grey[200]!));
 
+  final TextEditingController _textEditingController = TextEditingController();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -24,6 +26,11 @@ class _SearchScreenState extends State<SearchScreen> {
           child: Container(
             child: Center(
               child: TextFormField(
+                controller: _textEditingController,
+                onFieldSubmitted: (value) {
+                  print('onFieldSubmitted - $value');
+                  setState(() {});
+                },
                 decoration: InputDecoration(
                     isDense: true,
                     fillColor: Colors.grey[200],
@@ -31,7 +38,7 @@ class _SearchScreenState extends State<SearchScreen> {
                         EdgeInsets.symmetric(horizontal: 8, vertical: 8),
                     filled: true,
                     hintText: '아이템 검색',
-                    border: borderStyle,
+                    enabledBorder: borderStyle,
                     focusedBorder: borderStyle),
               ),
             ),
@@ -40,7 +47,9 @@ class _SearchScreenState extends State<SearchScreen> {
       ),
       body: ListView.separated(
           itemBuilder: (context, index) {
-            return ListTile();
+            return ListTile(
+              title: Text(_textEditingController.text),
+            );
           },
           separatorBuilder: (context, index) {
             return Container();

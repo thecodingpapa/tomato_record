@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:tomato_record/data/item_model.dart';
+import 'package:tomato_record/repo/algolia_service.dart';
 
 class SearchScreen extends StatefulWidget {
   const SearchScreen({Key? key}) : super(key: key);
@@ -27,8 +29,10 @@ class _SearchScreenState extends State<SearchScreen> {
             child: Center(
               child: TextFormField(
                 controller: _textEditingController,
-                onFieldSubmitted: (value) {
-                  print('onFieldSubmitted - $value');
+                onFieldSubmitted: (value) async {
+                  List<ItemModel> items =
+                      await AlgoliaService().queryItems(value);
+                  print('${items.toString()}');
                   setState(() {});
                 },
                 decoration: InputDecoration(

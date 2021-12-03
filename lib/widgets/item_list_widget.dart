@@ -20,7 +20,13 @@ class ItemListWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.beamToNamed('/$LOCATION_ITEM/${item.itemKey}');
+        BeamState beamState = Beamer.of(context).currentConfiguration!;
+        String current = beamState.uri.toString();
+        String newPath = (current == '/')
+            ? '/$LOCATION_ITEM/${item.itemKey}'
+            : '$current/${item.itemKey}';
+
+        context.beamToNamed(newPath);
       },
       child: SizedBox(
         height: imgSize,

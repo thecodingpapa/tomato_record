@@ -10,6 +10,7 @@ import 'package:tomato_record/screens/item/item_detail_screen.dart';
 import 'package:tomato_record/screens/search/search_screen.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/select_image_notifier.dart';
+import 'package:tomato_record/utils/logger.dart';
 
 const LOCATION_HOME = 'home';
 const LOCATION_INPUT = 'input';
@@ -66,6 +67,7 @@ class InputLocation extends BeamLocation {
 class ItemLocation extends BeamLocation {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
+    logger.d('${state.uriBlueprint}\n${state.uri}');
     return [
       ...HomeLocation().buildPages(context, state),
       if (state.pathParameters.containsKey(LOCATION_ITEM_ID))
@@ -84,6 +86,7 @@ class ItemLocation extends BeamLocation {
   @override
   List get pathBlueprints => [
         '/$LOCATION_ITEM/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID',
-        '/:$LOCATION_CHATROOM_ID'
+        '/:$LOCATION_CHATROOM_ID',
+        '/$LOCATION_SEARCH/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID'
       ];
 }

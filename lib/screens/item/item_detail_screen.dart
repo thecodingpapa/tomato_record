@@ -1,3 +1,4 @@
+import 'package:beamer/beamer.dart';
 import 'package:beamer/src/beamer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -86,7 +87,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
 
     await ChatService().createNewChatroom(_chatroomModel);
 
-    context.beamToNamed('/$LOCATION_ITEM/${widget.itemKey}/$chatroomKey');
+    BeamState beamState = Beamer.of(context).currentConfiguration!;
+    String current = beamState.uri.toString();
+    String newPath =
+        (current == '/') ? '/$chatroomKey' : '$current/$chatroomKey';
+    context.beamToNamed(newPath);
   }
 
   @override

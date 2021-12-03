@@ -6,13 +6,13 @@ import 'package:tomato_record/constants/data_keys.dart';
 /// item_title : ""
 /// item_key : ""
 /// item_address : ""
-/// item_price : 123.123
-/// seller_key : "asdf"
-/// buyer_key : "asdf"
-/// seller_image : "asdf"
-/// buyer_image : "asdf"
-/// geo_fire_point : " "
-/// last_msg : "bla bla bla"
+/// item_price : 0.0
+/// seller_key : ""
+/// buyer_key : ""
+/// seller_image : ""
+/// buyer_image : ""
+/// geo_fire_point : ""
+/// last_msg : ""
 /// last_msg_time : "2012-04-21T18:25:43-05:00"
 /// last_msg_user_key : ""
 /// chatroom_key : ""
@@ -23,15 +23,14 @@ class ChatroomModel {
   late String itemKey;
   late String itemAddress;
   late num itemPrice;
-  late num numOfChats;
   late String sellerKey;
   late String buyerKey;
   late String sellerImage;
   late String buyerImage;
   late GeoFirePoint geoFirePoint;
-  String? lastMsg;
-  DateTime? lastMsgTime;
-  String? lastMsgUserKey;
+  late String lastMsg;
+  late DateTime lastMsgTime;
+  late String lastMsgUserKey;
   late String chatroomKey;
   DocumentReference? reference;
 
@@ -41,15 +40,16 @@ class ChatroomModel {
       required this.itemKey,
       required this.itemAddress,
       required this.itemPrice,
-      required this.numOfChats,
       required this.sellerKey,
       required this.buyerKey,
       required this.sellerImage,
       required this.buyerImage,
       required this.geoFirePoint,
+      this.lastMsg = "",
+      required this.lastMsgTime,
+      this.lastMsgUserKey = "",
       required this.chatroomKey,
       this.reference});
-
   ChatroomModel.fromJson(
       Map<String, dynamic> json, this.chatroomKey, this.reference) {
     itemImage = json[DOC_ITEMIMAGE] ?? "";
@@ -57,7 +57,6 @@ class ChatroomModel {
     itemKey = json[DOC_ITEMKEY] ?? "";
     itemAddress = json[DOC_ITEMADDRESS] ?? "";
     itemPrice = json[DOC_ITEMPRICE] ?? 0;
-    numOfChats = json[DOC_NUMOFCHAT] ?? 0;
     sellerKey = json[DOC_SELLERKEY] ?? "";
     buyerKey = json[DOC_BUYERKEY] ?? "";
     sellerImage = json[DOC_SELLERIMAGE] ?? "";
@@ -70,7 +69,7 @@ class ChatroomModel {
     lastMsgTime = json[DOC_LASTMSGTIME] == null
         ? DateTime.now().toUtc()
         : (json[DOC_LASTMSGTIME] as Timestamp).toDate();
-    lastMsgUserKey = json[DOC_LASTMSGUSERKEY];
+    lastMsgUserKey = json[DOC_LASTMSGUSERKEY] ?? "";
   }
 
   Map<String, dynamic> toJson() {
@@ -80,7 +79,6 @@ class ChatroomModel {
     map[DOC_ITEMKEY] = itemKey;
     map[DOC_ITEMADDRESS] = itemAddress;
     map[DOC_ITEMPRICE] = itemPrice;
-    map[DOC_NUMOFCHAT] = numOfChats;
     map[DOC_SELLERKEY] = sellerKey;
     map[DOC_BUYERKEY] = buyerKey;
     map[DOC_SELLERIMAGE] = sellerImage;

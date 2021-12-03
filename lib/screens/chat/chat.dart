@@ -2,90 +2,95 @@ import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/data/chat_model.dart';
 
-Radius chatBorder = Radius.circular(20);
+const roundedCorner = Radius.circular(20);
 
 class Chat extends StatelessWidget {
   final Size size;
-  final bool isMe;
-  final ChatModel chat;
-  const Chat(this.chat, {Key? key, required this.size, this.isMe = true})
+  final bool isMine;
+  final ChatModel chatModel;
+  const Chat(
+      {Key? key,
+      required this.size,
+      required this.isMine,
+      required this.chatModel})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return isMe ? _buildMyChat() : _buildOthersChat();
+    return isMine ? _buildMyMsg(context) : _buildOthersMsg(context);
   }
 
-  Row _buildOthersChat() {
+  Row _buildOthersMsg(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.start,
       children: [
         ExtendedImage.network(
-          'https://randomuser.me/api/portraits/women/28.jpg',
-          shape: BoxShape.circle,
-          width: size.width / 12,
-          height: size.width / 12,
+          'https://randomuser.me/api/portraits/women/26.jpg',
+          width: 40,
+          height: 40,
+          fit: BoxFit.cover,
+          borderRadius: BorderRadius.circular(6),
+          shape: BoxShape.rectangle,
         ),
         SizedBox(
-          width: 8,
+          width: 6,
         ),
-        Expanded(
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              Container(
-                constraints:
-                    BoxConstraints(minHeight: 40, maxWidth: size.width * 0.7),
-                padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topLeft: Radius.zero,
-                      topRight: chatBorder,
-                      bottomLeft: chatBorder,
-                      bottomRight: chatBorder,
-                    ),
-                    color: Colors.grey[300]),
-                child: Text(chat.msg),
-              ),
-              Expanded(
-                child: Text(
-                  '오전 10:25',
-                  textScaleFactor: 0.6,
-                ),
-              ),
-            ],
-          ),
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.end,
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: [
+            Container(
+              child: Text(chatModel.msg,
+                  style: Theme.of(context).textTheme.bodyText1!),
+              padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+              constraints:
+                  BoxConstraints(minHeight: 40, maxWidth: size.width * 0.5),
+              decoration: BoxDecoration(
+                  color: Colors.grey[300],
+                  borderRadius: BorderRadius.only(
+                      topRight: roundedCorner,
+                      topLeft: Radius.circular(2),
+                      bottomRight: roundedCorner,
+                      bottomLeft: roundedCorner)),
+            ),
+            SizedBox(
+              width: 6,
+            ),
+            Text('오전 10:25'),
+          ],
         ),
       ],
     );
   }
 
-  Widget _buildMyChat() {
+  Row _buildMyMsg(BuildContext context) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.end,
+      mainAxisAlignment: MainAxisAlignment.end,
       children: [
-        Expanded(
-          child: Align(
-            alignment: Alignment.bottomRight,
-            child: Text(
-              '오전 10:25',
-              textScaleFactor: 0.6,
-            ),
-          ),
+        Text('오전 10:25'),
+        SizedBox(
+          width: 6,
         ),
         Container(
-          constraints:
-              BoxConstraints(minHeight: 40, maxWidth: size.width * 0.7),
+          child: Text(
+            chatModel.msg,
+            style: Theme.of(context)
+                .textTheme
+                .bodyText1!
+                .copyWith(color: Colors.white),
+          ),
           padding: EdgeInsets.symmetric(vertical: 12, horizontal: 16),
+          constraints:
+              BoxConstraints(minHeight: 40, maxWidth: size.width * 0.6),
           decoration: BoxDecoration(
+              color: Colors.red,
               borderRadius: BorderRadius.only(
-                topLeft: chatBorder,
-                topRight: Radius.zero,
-                bottomLeft: chatBorder,
-                bottomRight: chatBorder,
-              ),
-              color: Colors.red),
-          child: Text(chat.msg, style: TextStyle(color: Colors.white)),
+                  topLeft: roundedCorner,
+                  topRight: Radius.circular(2),
+                  bottomRight: roundedCorner,
+                  bottomLeft: roundedCorner)),
         ),
       ],
     );

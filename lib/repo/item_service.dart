@@ -40,11 +40,12 @@ class ItemService {
     return itemModel;
   }
 
-  Future<List<ItemModel>> getItems() async {
+  Future<List<ItemModel>> getItems(String userKey) async {
     CollectionReference<Map<String, dynamic>> collectionReference =
         FirebaseFirestore.instance.collection(COL_ITEMS);
-    QuerySnapshot<Map<String, dynamic>> snapshots =
-        await collectionReference.get();
+    QuerySnapshot<Map<String, dynamic>> snapshots = await collectionReference
+        .where(DOC_USERKEY, isNotEqualTo: userKey)
+        .get();
 
     List<ItemModel> items = [];
 
@@ -83,7 +84,7 @@ class ItemService {
 
     GeoFirePoint center = GeoFirePoint(latLng.latitude, latLng.longitude);
     double radius = 1.5;
-    var field = 'geoFirePoint';
+    var field = DOC_GEOFIREPOINT;
 
     List<ItemModel> items = [];
     List<DocumentSnapshot<Map<String, dynamic>>> snapshots = await geo

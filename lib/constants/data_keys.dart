@@ -1,8 +1,8 @@
 const COL_USERS = 'users';
 const COL_ITEMS = 'items';
+const COL_USER_ITEMS = 'user_items';
 const COL_CHATROOMS = 'chatrooms';
 const COL_CHATS = 'chats';
-const COL_USER_ITEMS = 'user_items';
 
 const DOC_ITEMIMAGE = "itemImage";
 const DOC_ITEMTITLE = "itemTitle";
@@ -10,7 +10,6 @@ const DOC_ITEMKEY = "itemKey";
 const DOC_ITEMADDRESS = "itemAddress";
 const DOC_ITEMPOSITION = "itemPosition";
 const DOC_ITEMPRICE = "itemPrice";
-const DOC_NUMOFCHAT = "numOfChat";
 const DOC_SELLERKEY = "sellerKey";
 const DOC_BUYERKEY = "buyerKey";
 const DOC_SELLERIMAGE = "sellerImage";

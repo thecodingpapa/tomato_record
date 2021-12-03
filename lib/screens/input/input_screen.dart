@@ -226,6 +226,7 @@ class _InputScreenState extends State<InputScreen> {
                 ),
                 _divider,
                 TextFormField(
+                  controller: _detailController,
                   maxLines: null,
                   keyboardType: TextInputType.multiline,
                   decoration: InputDecoration(

@@ -3,6 +3,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:tomato_record/data/user_model.dart';
 import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/screens/chat/chat_list_page.dart';
 import 'package:tomato_record/screens/home/items_page.dart';
@@ -20,43 +21,23 @@ class HomeScreen extends StatefulWidget {
 class _HomeScreenState extends State<HomeScreen> {
   int _bottomSelectedIndex = 0;
 
-  String _appbarTitle() {
-    switch (_bottomSelectedIndex) {
-      case 0:
-        {
-          return '정왕동';
-        }
-      case 1:
-        {
-          return '지도';
-        }
-      case 2:
-        {
-          return '채팅';
-        }
-      default:
-        {
-          return '정왕동';
-        }
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
+    UserModel? userModel = context.read<UserNotifier>().userModel;
     return Scaffold(
-      body: IndexedStack(
-        index: _bottomSelectedIndex,
-        children: [
-          ItemsPage(),
-          (context.read<UserNotifier>().userModel == null)
-              ? Container()
-              : MapPage(context.read<UserNotifier>().userModel!),
-          ChatListPage(),
-          Container(
-            color: Colors.accents[9],
-          )
-        ],
-      ),
+      body: (userModel == null)
+          ? Container()
+          : IndexedStack(
+              index: _bottomSelectedIndex,
+              children: [
+                ItemsPage(userKey: userModel.userKey),
+                MapPage(userModel),
+                ChatListPage(userKey: userModel.userKey),
+                Container(
+                  color: Colors.accents[9],
+                )
+              ],
+            ),
       floatingActionButton: ExpandableFab(
         distance: 90,
         children: [
@@ -81,8 +62,8 @@ class _HomeScreenState extends State<HomeScreen> {
       appBar: AppBar(
         centerTitle: false,
         title: Text(
-          _appbarTitle(),
-          style: Theme.of(context).textTheme.headline6,
+          '정왕동',
+          style: Theme.of(context).appBarTheme.titleTextStyle,
         ),
         actions: [
           IconButton(
@@ -91,7 +72,11 @@ class _HomeScreenState extends State<HomeScreen> {
                 context.beamToNamed("/");
               },
               icon: Icon(CupertinoIcons.nosign)),
-          IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.search)),
+          IconButton(
+              onPressed: () {
+                context.beamToNamed('/$LOCATION_SEARCH');
+              },
+              icon: Icon(CupertinoIcons.search)),
           IconButton(onPressed: () {}, icon: Icon(CupertinoIcons.text_justify)),
         ],
       ),

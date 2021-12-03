@@ -49,6 +49,20 @@ class ItemModel {
         ? DateTime.now().toUtc()
         : (json[DOC_CREATEDDATE] as Timestamp).toDate();
   }
+  ItemModel.fromAlgoliaObject(Map<String, dynamic> json, this.itemKey) {
+    userKey = json[DOC_USERKEY] ?? "";
+    imageDownloadUrls = json[DOC_IMAGEDOWNLOADURLS] != null
+        ? json[DOC_IMAGEDOWNLOADURLS].cast<String>()
+        : [];
+    title = json[DOC_TITLE] ?? "";
+    category = json[DOC_CATEGORY] ?? "none";
+    price = json[DOC_PRICE] ?? 0;
+    negotiable = json[DOC_NEGOTIABLE] ?? false;
+    detail = json[DOC_DETAIL] ?? "";
+    address = json[DOC_ADDRESS] ?? "";
+    geoFirePoint = GeoFirePoint(0, 0);
+    createdDate = DateTime.now().toUtc();
+  }
 
   ItemModel.fromQuerySnapshot(
       QueryDocumentSnapshot<Map<String, dynamic>> snapshot)

@@ -67,7 +67,7 @@ class InputLocation extends BeamLocation {
 class ItemLocation extends BeamLocation {
   @override
   List<BeamPage> buildPages(BuildContext context, BeamState state) {
-    logger.d('${state.uriBlueprint}\n${state.uri}');
+    logger.d('path - ${state.uriBlueprint}\n${state.uri}');
     return [
       ...HomeLocation().buildPages(context, state),
       if (state.pathParameters.containsKey(LOCATION_ITEM_ID))
@@ -85,8 +85,8 @@ class ItemLocation extends BeamLocation {
 
   @override
   List get pathBlueprints => [
+        '/$LOCATION_SEARCH/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID',
         '/$LOCATION_ITEM/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID',
-        '/:$LOCATION_CHATROOM_ID',
-        '/$LOCATION_SEARCH/:$LOCATION_ITEM_ID/:$LOCATION_CHATROOM_ID'
+        '/:$LOCATION_CHATROOM_ID'
       ];
 }

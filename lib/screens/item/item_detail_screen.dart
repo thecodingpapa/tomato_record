@@ -1,4 +1,3 @@
-import 'package:beamer/beamer.dart';
 import 'package:beamer/src/beamer.dart';
 import 'package:extended_image/extended_image.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +13,7 @@ import 'package:tomato_record/screens/item/similar_item.dart';
 import 'package:tomato_record/states/category_notifier.dart';
 import 'package:tomato_record/states/user_notifier.dart';
 import 'package:provider/provider.dart';
+import 'package:tomato_record/utils/logger.dart';
 import 'package:tomato_record/utils/time_calculation.dart';
 
 class ItemDetailScreen extends StatefulWidget {
@@ -88,9 +88,11 @@ class _ItemDetailScreenState extends State<ItemDetailScreen> {
     await ChatService().createNewChatroom(_chatroomModel);
 
     BeamState beamState = Beamer.of(context).currentConfiguration!;
-    String current = beamState.uri.toString();
+    String currentPath = beamState.uri.toString();
     String newPath =
-        (current == '/') ? '/$chatroomKey' : '$current/$chatroomKey';
+        (currentPath == '/') ? '/$chatroomKey' : '$currentPath/$chatroomKey';
+
+    logger.d('newPath - $newPath');
     context.beamToNamed(newPath);
   }
 

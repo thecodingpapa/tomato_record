@@ -5,6 +5,7 @@ import 'package:beamer/beamer.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/router/locations.dart';
+import 'package:tomato_record/utils/logger.dart';
 
 class ItemListWidget extends StatelessWidget {
   final ItemModel item;
@@ -20,7 +21,14 @@ class ItemListWidget extends StatelessWidget {
 
     return InkWell(
       onTap: () {
-        context.beamToNamed('/$LOCATION_ITEM/${item.itemKey}');
+        BeamState beamState = Beamer.of(context).currentConfiguration!;
+        String currentPath = beamState.uri.toString();
+        String newPath = (currentPath == '/')
+            ? '/$LOCATION_ITEM/${item.itemKey}'
+            : '$currentPath/${item.itemKey}';
+
+        logger.d('newPath - $newPath');
+        context.beamToNamed(newPath);
       },
       child: SizedBox(
         height: imgSize,

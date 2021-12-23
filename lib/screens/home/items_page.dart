@@ -1,12 +1,8 @@
-import 'package:extended_image/extended_image.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:tomato_record/constants/common_size.dart';
 import 'package:shimmer/shimmer.dart';
 import 'package:tomato_record/data/item_model.dart';
 import 'package:tomato_record/repo/item_service.dart';
-import 'package:beamer/beamer.dart';
-import 'package:tomato_record/router/locations.dart';
 import 'package:tomato_record/widgets/item_list_widget.dart';
 
 class ItemsPage extends StatefulWidget {
